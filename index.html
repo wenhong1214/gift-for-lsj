@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>专属领航员 - 致李思婧</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;500;600&family=Noto+Sans+SC:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg: #090e17;
+  --surface: #121a2f;
+  --surface2: #1e293b;
+  --pink: #ec4899;
+  --pink-dim: #be185d;
+  --blue: #3b82f6;
+  --gold: #f59e0b;
+  --text: #f8fafc;
+  --muted: #94a3b8;
+  --serif: 'Noto Serif SC', serif;
+  --sans: 'Noto Sans SC', sans-serif;
+}
+
+* { 
+    box-sizing: border-box; 
+    margin: 0; 
+    padding: 0; 
+    -webkit-tap-highlight-color: transparent; 
+    outline: none;
+}
+
+body { 
+    background: var(--bg); 
+    color: var(--text); 
+    font-family: var(--sans); 
+    overflow: hidden; 
+    width: 100vw; 
+    height: 100vh;
+}
+
+#stars { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
+.star { position: absolute; border-radius: 50%; background: #fff; animation: twinkle var(--dur) ease-in-out infinite alternate; }
+@keyframes twinkle { 0% { opacity: 0.1; transform: scale(0.8); } 100% { opacity: 0.8; transform: scale(1.2); } }
+
+/* --- 启动屏 --- */
+#entry-screen {
+    position: fixed; inset: 0; z-index: 10000;
+    background: var(--bg); display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    transition: opacity 0.8s ease, visibility 0.8s;
+}
+.entry-btn {
+    padding: 1rem 2.5rem; background: rgba(236, 72, 153, 0.1);
+    border: 1px solid var(--pink); border-radius: 30px;
+    color: var(--pink); font-size: 1.1rem; letter-spacing: 2px;
+    cursor: pointer; animation: pulse 2s infinite;
+    transition: transform 0.15s ease, background 0.15s ease;
+}
+.entry-btn:active { transform: scale(0.94) !important; background: rgba(236, 72, 153, 0.3); }
+
+@keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(236, 72, 153, 0.4); } 70% { box-shadow: 0 0 0 15px rgba(236, 72, 153, 0); } 100% { box-shadow: 0 0 0 0 rgba(236, 72, 153, 0); } }
+
+/* --- 双城时空天气栏 --- */
+.weather-bar {
+    position: fixed; top: 0; left: 0; width: 100%; z-index: 9000;
+    display: flex; justify-content: space-between; padding: 10px 20px;
+    background: linear-gradient(to bottom, rgba(9,14,23,0.9), rgba(9,14,23,0));
+    backdrop-filter: blur(5px); pointer-events: none;
+    font-size: 0.85rem; color: var(--muted); opacity: 0; transition: opacity 1s;
+}
+.weather-item { display: flex; align-items: center; gap: 8px; }
+.city-name { font-weight: 500; color: #fff; letter-spacing: 1px; }
+
+/* --- 音乐控制按钮 --- */
+.music-btn {
+    position: fixed; top: 50px; right: 20px; z-index: 9999;
+    width: 36px; height: 36px; background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 1rem; cursor: pointer; border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 0 10px rgba(236, 72, 153, 0.2); animation: spin 4s linear infinite;
+    transition: background 0.2s ease, opacity 0.3s; opacity: 0;
+}
+.music-btn.paused { animation-play-state: paused; opacity: 0.5; box-shadow: none; }
+.music-btn:active { background: rgba(236, 72, 153, 0.4); }
+@keyframes spin { 100% { transform: rotate(360deg); } }
+
+section { 
+    position: absolute; inset: 0; z-index: 1; 
+    display: flex; flex-direction: column; align-items: center; justify-content: center; 
+    padding: 2rem 1.5rem; opacity: 0; pointer-events: none; 
+    transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow-y: auto; overflow-x: hidden;
+}
+section.active-page { opacity: 1; pointer-events: all; z-index: 10; }
+
+/* --- PAGE 0: MAP --- */
+#page-map { background: radial-gradient(circle at center, #111827 0%, var(--bg) 100%); }
+#map-visualizer {
+    position: relative; width: 100%; max-width: 680px; margin-bottom: 1rem;
+    border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.5); overflow: hidden;
+    /* 关键修复：禁止被 Flexbox 压扁，维持原图比例 */
+    flex-shrink: 0; 
+}
+#map-svg { display: block; width: 100%; height: auto; }
+
+/* IP 问候语 */
+.ip-greeting {
+    font-size: 0.85rem; color: var(--gold); margin-bottom: 1rem; 
+    padding: 8px 15px; background: rgba(245, 158, 11, 0.1); border-radius: 20px;
+    border: 1px solid rgba(245, 158, 11, 0.3); opacity: 0; transition: 1s; transform: translateY(10px);
+}
+
+.map-intro h1 { font-family: var(--serif); font-size: 2.2rem; font-weight: 500; letter-spacing: 2px; text-align: center; }
+.map-intro p { color: var(--muted); margin-top: 10px; text-align: center;}
+.counters { display: flex; gap: 20px; margin-top: 2rem; width: 100%; max-width: 500px; justify-content: center; }
+.ccard { background: var(--surface); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 1.5rem; text-align: center; flex: 1; }
+.ccard-title { font-size: 0.8rem; color: var(--muted); }
+.ccard-sub { font-size: 0.75rem; color: var(--muted); }
+.cval { font-size: 1.5rem; font-weight: 600; font-family: var(--serif); margin: 10px 0; }
+
+/* =========================================================================
+   高级感按钮
+   ========================================================================= */
+.btn { 
+    display: inline-block; padding: 0.8rem 3rem; 
+    background: linear-gradient(135deg, var(--pink) 0%, var(--pink-dim) 100%); 
+    border: none; border-radius: 30px; 
+    color: #fff; font-size: 1rem; font-weight: 500; cursor: pointer; 
+    transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1); letter-spacing: 2px; margin-top: 2rem;
+    box-shadow: 0 6px 20px rgba(236, 72, 153, 0.3), inset 0 2px 2px rgba(255,255,255,0.3);
+}
+.btn:hover { 
+    box-shadow: 0 8px 25px rgba(236, 72, 153, 0.5), inset 0 2px 2px rgba(255,255,255,0.4); 
+    transform: translateY(-2px);
+}
+.btn:active {
+    transform: translateY(3px) scale(0.95) !important;
+    box-shadow: 0 2px 10px rgba(236, 72, 153, 0.4), inset 0 3px 6px rgba(0,0,0,0.2) !important;
+}
+
+/* --- 逃跑按钮页面专属动画与样式 --- */
+.btn-pulse { animation: heartPulse 1.2s infinite alternate; }
+@keyframes heartPulse {
+    0% { transform: scale(1); box-shadow: 0 6px 20px rgba(236, 72, 153, 0.4), inset 0 2px 2px rgba(255,255,255,0.3); }
+    100% { transform: scale(1.08); box-shadow: 0 15px 35px rgba(236, 72, 153, 0.7), inset 0 2px 2px rgba(255,255,255,0.4); }
+}
+.btn-gray {
+    display: inline-block; padding: 0.5rem 1rem; margin-top: 1.5rem;
+    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); 
+    border-radius: 20px; color: var(--muted); font-size: 0.85rem; cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+}
+
+#transition { position: fixed; inset: 0; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; background: var(--bg); opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+#transition.show { opacity: 1; pointer-events: all; }
+.trans-num { font-family: var(--serif); font-size: 8rem; color: var(--pink); line-height: 1; }
+.trans-msg { font-size: 1.2rem; color: var(--muted); margin-top: 2rem; opacity: 0; transition: opacity 0.5s; letter-spacing: 2px; }
+
+/* --- PAGE 2: LETTER --- */
+.letter-wrap { max-width: 600px; width: 100%; background: var(--surface); padding: 3rem; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); }
+.letter-body { font-family: var(--serif); font-size: 1.1rem; line-height: 2.2; color: #e2e8f0; }
+.letter-body p { margin-bottom: 1.5rem; }
+.highlight { color: var(--pink); font-weight: 500; }
+
+/* --- PAGE 3: TREASURE --- */
+.treasure-wrap { max-width: 600px; width: 100%; margin-top: 4rem; margin-bottom: 2rem;}
+.prog-container { position: relative; width: 100%; height: 80px; margin-bottom: 2rem; }
+.prog-line { position: absolute; top: 50%; left: 10%; right: 10%; height: 2px; background: var(--surface2); transform: translateY(-50%); }
+.prog-fill { position: absolute; top: 0; left: 0; height: 100%; width: 0%; background: var(--pink); transition: width 0.8s ease; }
+.avatar { position: absolute; top: 0; font-size: 2rem; transition: left 0.8s ease, right 0.8s ease, opacity 0.3s; }
+#fig-kl { left: 10%; transform: translateX(-50%); }
+#fig-wh { right: 10%; transform: translateX(50%); }
+#fig-hug { 
+    position: absolute; left: 50%; top: -10px; transform: translateX(-50%) scale(0); 
+    font-size: 3.5rem; opacity: 0; transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+#fig-hug.hug-active { transform: translateX(-50%) scale(1); opacity: 1; }
+
+.qcard { background: var(--surface); padding: 2.5rem; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+.qtext { font-family: var(--serif); font-size: 1.2rem; margin-bottom: 2rem; line-height: 1.6; }
+.opt { display: flex; gap: 15px; padding: 1.2rem; background: var(--surface2); border-radius: 12px; margin-bottom: 1rem; cursor: pointer; transition: all 0.2s; border: 1px solid transparent; }
+.opt:hover { border-color: var(--pink-dim); transform: translateX(5px); }
+.opt:active { transform: scale(0.97) !important; background: rgba(236, 72, 153, 0.15); border-color: var(--pink); }
+.opt.selected { border-color: var(--pink); background: rgba(236, 72, 153, 0.1); }
+.opt-free input { width: 100%; padding: 1rem; background: var(--surface2); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; color: #fff; font-size: 1rem; outline: none; transition: 0.2s; }
+.opt-free input:focus { border-color: var(--pink); box-shadow: 0 0 10px rgba(236,72,153,0.3); }
+
+#popup { position: fixed; inset: 0; z-index: 5000; display: flex; align-items: center; justify-content: center; background: rgba(9, 14, 23, 0.9); opacity: 0; pointer-events: none; transition: 0.3s; }
+#popup.show { opacity: 1; pointer-events: all; }
+.popup-box { background: var(--surface); border: 1px solid var(--pink); border-radius: 20px; padding: 3rem; text-align: center; max-width: 400px; width: 90%; box-shadow: 0 10px 40px rgba(236, 72, 153, 0.2); }
+
+/* --- PAGE 4: GIFTS --- */
+.gifts-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.gift-box { background: var(--surface); aspect-ratio: 1; border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; display: flex; align-items: center; justify-content: center; flex-direction: column; cursor: pointer; transition: transform 0.2s, background 0.4s, border-color 0.4s; overflow: hidden; position: relative; }
+.gift-box:active { transform: scale(0.93); }
+.gift-box.opened { background: rgba(236, 72, 153, 0.05); border-color: var(--pink); transform: scale(1) !important; box-shadow: inset 0 0 20px rgba(236,72,153,0.1); }
+.gift-lid { font-size: 3rem; transition: 0.6s cubic-bezier(0.34,1.56,0.64,1); }
+.gift-box.opened .gift-lid { transform: translateY(-100px) rotate(20deg); opacity: 0; }
+.gift-content { position: absolute; opacity: 0; padding: 1rem; text-align: center; transition: 0.4s 0.2s; }
+.gift-box.opened .gift-content { opacity: 1; }
+.gift-content h4 { color: var(--pink); margin-bottom: 5px; font-size: 0.9rem; }
+.gift-content p { font-size: 0.8rem; color: var(--muted); }
+
+/* --- PAGE 5: PHOTOS --- */
+.photo-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; max-width: 800px; width: 100%; margin-bottom: 3rem; }
+.photo-card { background: var(--surface); border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); transition: transform 0.3s; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+.photo-card:hover { transform: translateY(-5px); border-color: var(--pink-dim); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+.photo-ph { background: var(--surface2); width: 100%; aspect-ratio: 4/3; overflow: hidden; }
+.photo-ph img { width: 100%; height: 100%; object-fit: cover; border-bottom: 1px solid rgba(255,255,255,0.05); }
+.photo-txt { padding: 1.2rem; font-family: var(--serif); font-size: 0.9rem; color: #cbd5e1; line-height: 1.6; }
+
+/* --- 移动端适配 --- */
+#page-1, #page-2, #page-3, #page-4, #page-5 { justify-content: flex-start; padding-top: 6rem; padding-bottom: 4rem; }
+@media (max-width: 600px) {
+    section { padding: 1rem; padding-top: 5rem; }
+    .map-intro h1 { font-size: 1.6rem; }
+    
+    /* 关键修复：让卡片在手机上保持左右排列 */
+    .counters { flex-direction: row; gap: 10px; }
+    .ccard { padding: 1.2rem 0.5rem; }
+    .ccard-title { font-size: 0.75rem; }
+    .ccard-sub { font-size: 0.7rem; }
+    .cval { font-size: 1.2rem; }
+    
+    .letter-wrap { padding: 2.5rem 1.5rem; margin-top: 1rem; }
+    .letter-body { font-size: 1.05rem; line-height: 1.8; }
+    .qcard { padding: 1.8rem 1.2rem; }
+    .opt { padding: 1rem; }
+    .gifts-grid { grid-template-columns: repeat(2, 1fr); gap: 15px; }
+    .gift-lid { font-size: 2.5rem; }
+    .gift-content h4 { font-size: 0.85rem; }
+    .gift-content p { font-size: 0.75rem; }
+    .photo-grid { grid-template-columns: 1fr; gap: 20px; }
+    .photo-txt { font-size: 0.95rem; }
+    .btn { margin-bottom: 2rem; }
+    .weather-bar { padding: 8px 10px; font-size: 0.75rem; }
+    .ip-greeting { font-size: 0.75rem; padding: 6px 10px; }
+}
+</style>
+</head>
+<body>
+
+<!-- 启动进入屏 -->
+<div id="entry-screen">
+    <button class="entry-btn" onclick="enterSite()">接收跨国加密信号 💌</button>
+</div>
+
+<!-- 顶部天气时钟栏 -->
+<div class="weather-bar" id="weather-bar">
+    <div class="weather-item">
+        <span class="city-name" style="color:var(--pink)">吉隆坡</span>
+        <span id="kl-temp">加载中..</span>
+        <span id="kl-time">--:--</span>
+    </div>
+    <div class="weather-item">
+        <span class="city-name" style="color:var(--blue)">武汉</span>
+        <span id="wh-temp">加载中..</span>
+        <span id="wh-time">--:--</span>
+    </div>
+</div>
+
+<!-- 音效加载 -->
+<audio id="bgm" src="bgm.mp3" loop preload="auto"></audio>
+<audio id="sound-correct" src="correct.mp3" preload="auto"></audio>
+<audio id="sound-wrong" src="wrong.mp3" preload="auto"></audio>
+
+<div id="music-btn" class="music-btn" onclick="toggleMusic()">🎵</div>
+<div id="stars"></div>
+
+<div id="transition">
+  <div class="trans-num" id="trans-num">3</div>
+  <div class="trans-msg" id="trans-msg">正在前往下一段记忆...</div>
+</div>
+
+<div id="popup">
+  <div class="popup-box">
+    <div id="popup-icon" style="font-size:3rem; margin-bottom:1rem;">💌</div>
+    <h3 id="popup-title" style="color:var(--pink); font-family:var(--serif); margin-bottom:1rem; font-size:1.5rem;"></h3>
+    <p id="popup-msg" style="color:var(--muted); line-height:1.6; margin-bottom:2rem;"></p>
+    <button class="btn" style="margin-top:0; padding: 0.6rem 2rem;" onclick="closePopup()">我知道了</button>
+  </div>
+</div>
+
+<!-- PAGE 0: 地图 -->
+<section id="page-0">
+  <div class="ip-greeting" id="ip-greeting">✨ 正在连接专属星际航线...</div>
+  <div id="map-visualizer">
+    <svg id="map-svg" viewBox="0 0 680 560" xmlns="http://www.w3.org/2000/svg">
+      <defs><clipPath id="mc"><rect width="680" height="560"/></clipPath></defs>
+      <rect width="680" height="560" fill="#06060f"/>
+      <image href="map.png" x="0" y="0" width="680" height="621" clip-path="url(#mc)" preserveAspectRatio="xMinYMin meet" opacity="0.8"/>
+      <path id="path-kl" d="M370,150 C400,130 430,130 463,145" stroke="var(--pink)" stroke-width="2.5" fill="none" stroke-dasharray="200" stroke-dashoffset="200" />
+      <path id="path-wh" d="M327,273 C360,200 400,150 463,145" stroke="var(--blue)" stroke-width="2.5" fill="none" stroke-dasharray="300" stroke-dashoffset="300" />
+      <circle id="dkl" cx="370" cy="150" r="6" fill="var(--pink)" opacity="0"/>
+      <circle id="dwh" cx="327" cy="273" r="6" fill="var(--blue)" opacity="0"/>
+      <circle id="djp" cx="463" cy="145" r="7" fill="#fff" opacity="0"/>
+      <circle id="rkl" cx="370" cy="150" r="6" fill="none" stroke="var(--pink)" stroke-width="2" opacity="0"/>
+      <circle id="rwh" cx="327" cy="273" r="6" fill="none" stroke="var(--blue)" stroke-width="2" opacity="0"/>
+      <text id="lkl" x="370" y="135" text-anchor="middle" font-size="14" fill="var(--pink)" font-family="var(--sans)" font-weight="600" opacity="0" letter-spacing="1px">武汉</text>
+      <text id="lwh" x="327" y="300" text-anchor="middle" font-size="14" fill="var(--blue)" font-family="var(--sans)" font-weight="600" opacity="0" letter-spacing="1px">吉隆坡</text>
+      <text id="ljp" x="475" y="140" text-anchor="start" font-size="14" fill="#ffffff" font-family="var(--sans)" font-weight="600" opacity="0" letter-spacing="1px">相遇大阪</text>
+      <g id="fw" opacity="0">
+        <line x1="463" y1="145" x2="463" y2="117" stroke="#f0c060" stroke-width="2"/>
+        <line x1="463" y1="145" x2="463" y2="173" stroke="#f0c060" stroke-width="2"/>
+        <line x1="463" y1="145" x2="435" y2="145" stroke="#e890b8" stroke-width="2"/>
+        <line x1="463" y1="145" x2="491" y2="145" stroke="#e890b8" stroke-width="2"/>
+        <line x1="463" y1="145" x2="443" y2="125" stroke="#7eb8e8" stroke-width="2"/>
+        <line x1="463" y1="145" x2="483" y2="165" stroke="#7eb8e8" stroke-width="2"/>
+      </g>
+    </svg>
+  </div>
+  
+  <div class="map-intro">
+    <h1>跨越 3300 公里的双向奔赴</h1>
+    <p>剥离复杂的地理，我们的坐标就是唯一的引力场</p>
+  </div>
+
+  <div class="counters">
+    <div class="ccard">
+      <div class="ccard-title">距离日本奔现已过去</div>
+      <div class="cval" style="color:var(--pink);" id="elapsed">—</div>
+      <div class="ccard-sub">铭记真实的触碰</div>
+    </div>
+    <div class="ccard">
+      <div class="ccard-title">距离下一次见面还有</div>
+      <div class="cval" style="color:var(--blue);" id="remaining">—</div>
+      <div class="ccard-sub">坚定的异国恋期盼</div>
+    </div>
+  </div>
+
+  <button class="btn" onclick="startTransition(1, '正在建立神经连线...')">继续流转</button>
+</section>
+
+<!-- PAGE 1: 逃跑按钮游戏页 -->
+<section id="page-1">
+  <div style="text-align:center; max-width: 500px; margin-top: 5rem;">
+    <h2 style="font-family:var(--serif); font-size:2.2rem; color:var(--pink); margin-bottom:1.5rem; font-weight:500;">异国连线请求 📡</h2>
+    <p style="font-size:1.1rem; line-height:1.8; color:var(--text); margin-bottom: 4rem;">
+      既然距离下一次见面还有这么久...<br>
+      专属领航员想提前确认一下：<br><br>
+      <span style="color:var(--gold); font-size:1.3rem; font-weight:600; letter-spacing: 2px;">这段时间，你有没有超级想我？</span>
+    </p>
+    
+    <button class="btn btn-pulse" style="font-size: 1.4rem; padding: 1.2rem 4rem; margin-bottom: 2rem; border-radius: 40px;" onclick="startTransition(2, '心意已接收，加载信件...')">想！超级想！🥰</button>
+    
+    <br><br>
+    
+    <button id="btn-no" class="btn-gray">不想，一点都不想</button>
+  </div>
+</section>
+
+<!-- PAGE 2: 告白信 -->
+<section id="page-2">
+  <div class="letter-wrap">
+    <p style="color:var(--pink); margin-bottom:2rem; font-weight:600; letter-spacing:2px;">致 李思婧，</p>
+    <div class="letter-body">
+      <p>以前，你总是在屏幕那头，只有具体的文字。直到前阵子，我们在日本的火车站相遇。</p>
+      <p>那一刻，所有的文字都变成了你<span class="highlight">皮肤的温度</span>，所有的语音都变成了你<span class="highlight">真实的笑声</span>。我真切地牵到了你的手，比我想象的还要软；我真切地看到了你吃美食时满足的眼神，比视频里还要可爱。</p>
+      <p>那几天的旅行，是对我们熬过异国异地最好的奖赏。对你的满意和喜欢，直接从屏幕里的 100% 变成了现实里的 <span class="highlight">200%</span>。</p>
+      <p>虽然现在我们又回到了各自的城市，但我知道，距离只能改变我们见面的频率，却无法改变我们相爱的深度。因为见过你、抱过你之后，我对我们的未来有了无比坚定的底气。</p>
+      <p>距离挡不住我想你的声音，我会努力拉近我们彼此距离的，爱你。</p>
+    </div>
+    <div style="text-align:right; color:var(--muted); margin-top:2rem;">—— 你的专属领航员</div>
+  </div>
+  <button class="btn" onclick="startTransition(3, '心跳验证系统启动...')">接受考验</button>
+</section>
+
+<!-- PAGE 3: 答题验证 -->
+<section id="page-3">
+  <div class="treasure-wrap">
+    <div style="text-align:center; margin-bottom:2rem;">
+      <h2 style="font-family:var(--serif); font-weight:400; font-size:2rem; letter-spacing:2px;">寻宝验证</h2>
+      <p style="color:var(--muted); margin-top:10px;">只有百分百的了解，才能让这两个小人抱在一起</p>
+    </div>
+    <div class="prog-container">
+      <div class="prog-line"><div class="prog-fill" id="prog-fill"></div></div>
+      <div class="avatar" id="fig-kl">🧑</div>
+      <div class="avatar" id="fig-wh">👩</div>
+      <div id="fig-hug">👩‍❤️‍👨<br><span style="font-size:1.5rem; color:var(--pink); display:block; text-align:center; animation: bounce 1s infinite;">❤️</span></div>
+    </div>
+    <div id="qwrap"></div>
+  </div>
+</section>
+
+<!-- PAGE 4: 盲盒礼物 -->
+<section id="page-4">
+  <div style="text-align:center; margin-bottom:3rem;">
+    <h2 style="font-family:var(--serif); font-size:2rem; font-weight:400; letter-spacing:2px;">礼物拆解</h2>
+    <p style="color:var(--muted); margin-top:10px;">点击拆开属于我们的未来承诺</p>
+  </div>
+  <div class="gifts-grid" id="gifts-grid" style="max-width:600px; width:100%;"></div>
+  <button class="btn" id="btn-final" style="display:none;" onclick="startTransition(5, '正在加载最终记忆...')">解锁最终站</button>
+</section>
+
+<!-- PAGE 5: 最终照片墙 -->
+<section id="page-5">
+  <div style="text-align:center; margin-bottom:3rem;">
+    <h2 style="font-family:var(--serif); font-size:2rem; font-weight:400; letter-spacing:2px;">那些灿烂的切片</h2>
+    <p style="color:var(--muted); margin-top:10px;">只要我们站在一起，连风景都成了陪衬</p>
+  </div>
+  
+  <div class="photo-grid" id="photo-grid"></div>
+  
+  <p style="font-family:var(--serif); font-size:1.2rem; text-align:center; line-height:2; margin-bottom: 4rem;">
+    无论相隔多远，你都是我最想奔赴的方向。<br/>
+    <span style="color:var(--pink); font-size: 1.4rem; font-weight: 500;">8月，我们再相见。</span><br/>
+    <span style="color:var(--muted); font-size: 0.9rem;">（虽然不知道具体是几号，但先放一号预定吧，你的档期跑不掉的）</span>
+  </p>
+</section>
+
+<script>
+for(let i=0; i<100; i++){
+  let s = document.createElement('div');
+  s.className = 'star';
+  let sz = Math.random() * 2 + 1;
+  s.style.width = sz + 'px'; s.style.height = sz + 'px';
+  s.style.left = Math.random() * 100 + '%'; s.style.top = Math.random() * 100 + '%';
+  s.style.setProperty('--dur', (Math.random() * 3 + 2) + 's');
+  document.getElementById('stars').appendChild(s);
+}
+
+function enterSite() {
+    const entry = document.getElementById('entry-screen');
+    const bgm = document.getElementById('bgm');
+    const musicBtn = document.getElementById('music-btn');
+    const weatherBar = document.getElementById('weather-bar');
+    
+    bgm.play().catch(e => console.log(e));
+    musicBtn.style.opacity = '1';
+    weatherBar.style.opacity = '1';
+    
+    entry.style.opacity = '0';
+    setTimeout(() => {
+        entry.style.display = 'none';
+        document.getElementById('page-0').classList.add('active-page');
+        startMapAnimation();
+    }, 800);
+}
+
+function toggleMusic() {
+    const bgm = document.getElementById('bgm');
+    const btn = document.getElementById('music-btn');
+    if (bgm.paused) { bgm.play(); btn.classList.remove('paused'); } 
+    else { bgm.pause(); btn.classList.add('paused'); }
+}
+
+function parseWeather(code) {
+    if(code === 0) return '晴 ☀️';
+    if(code > 0 && code <= 3) return '多云 ⛅';
+    if(code >= 51 && code <= 67) return '雨 🌧️';
+    if(code >= 71 && code <= 77) return '雪 ❄️';
+    return '阴 ☁️';
+}
+
+async function initEnvironment() {
+    try {
+        const resWh = await fetch('https://api.open-meteo.com/v1/forecast?latitude=30.58&longitude=114.27&current_weather=true');
+        const dataWh = await resWh.json();
+        document.getElementById('wh-temp').innerText = `${parseWeather(dataWh.current_weather.weathercode)} ${Math.round(dataWh.current_weather.temperature)}°C`;
+        
+        const resKl = await fetch('https://api.open-meteo.com/v1/forecast?latitude=3.14&longitude=101.69&current_weather=true');
+        const dataKl = await resKl.json();
+        document.getElementById('kl-temp').innerText = `${parseWeather(dataKl.current_weather.weathercode)} ${Math.round(dataKl.current_weather.temperature)}°C`;
+    } catch(e) {
+        document.getElementById('wh-temp').innerText = '获取中...';
+        document.getElementById('kl-temp').innerText = '获取中...';
+    }
+
+    setInterval(() => {
+        const now = new Date();
+        const timeStr = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
+        document.getElementById('kl-time').innerText = timeStr;
+        document.getElementById('wh-time').innerText = timeStr;
+    }, 1000);
+
+    try {
+        const ipRes = await fetch('https://get.geojs.io/v1/ip/geo.json');
+        const ipData = await ipRes.json();
+        const location = ipData.region || ipData.city || '远方';
+        const greeting = document.getElementById('ip-greeting');
+        greeting.innerText = `✨ 检测到有一位来自 [${location}] 的漂亮女孩正在访问本站...`;
+        greeting.style.opacity = '1';
+        greeting.style.transform = 'translateY(0)';
+    } catch(e) { console.log("IP 获取失败"); }
+}
+initEnvironment();
+
+function updateTimers(){
+  const d_met = new Date('2026-04-16T00:00:00').getTime();
+  const d_next = new Date('2026-08-01T00:00:00').getTime();
+  const now = new Date().getTime();
+  
+  let diff_past = Math.floor((now - d_met) / (1000 * 60 * 60));
+  if(diff_past >= 0) { document.getElementById('elapsed').innerText = Math.floor(diff_past/24) + '天 ' + (diff_past%24) + '时'; }
+  
+  let diff_future = d_next - now;
+  if(diff_future > 0) { document.getElementById('remaining').innerText = Math.ceil(diff_future / (1000 * 60 * 60 * 24)) + '天'; } 
+  else { document.getElementById('remaining').innerText = '今天相见！'; }
+}
+setInterval(updateTimers, 60000);
+updateTimers();
+
+function startMapAnimation() {
+    setTimeout(() => {
+        ['dkl', 'lkl', 'dwh', 'lwh'].forEach(id => {
+            const el = document.getElementById(id);
+            if(el) { el.style.transition = 'opacity 0.6s'; el.style.opacity = '1'; }
+        });
+        
+        setInterval(() => {
+            ['rkl', 'rwh'].forEach(id => {
+                const el = document.getElementById(id);
+                if(!el) return;
+                let r = parseFloat(el.getAttribute('r')) || 6;
+                r += 0.3;
+                if(r > 12) r = 6;
+                el.setAttribute('r', r);
+                el.style.opacity = 1 - ((r - 6) / 6);
+            });
+        }, 40);
+
+        setTimeout(() => {
+            document.getElementById('path-kl').style.transition = 'stroke-dashoffset 2s cubic-bezier(0.4, 0, 0.2, 1)';
+            document.getElementById('path-kl').style.strokeDashoffset = '0';
+            document.getElementById('path-wh').style.transition = 'stroke-dashoffset 2s cubic-bezier(0.4, 0, 0.2, 1)';
+            document.getElementById('path-wh').style.strokeDashoffset = '0';
+            
+            setTimeout(() => {
+                document.getElementById('djp').style.transition = 'opacity 0.6s';
+                document.getElementById('ljp').style.transition = 'opacity 0.6s';
+                document.getElementById('djp').style.opacity = '1';
+                document.getElementById('ljp').style.opacity = '1';
+                
+                const fw = document.getElementById('fw');
+                if(fw) {
+                    fw.style.transition = 'opacity 0.2s';
+                    fw.style.opacity = '1';
+                    setTimeout(() => { fw.style.transition = 'opacity 0.8s'; fw.style.opacity = '0'; }, 600);
+                }
+            }, 1800);
+        }, 600);
+    }, 500);
+}
+
+const noBtn = document.getElementById('btn-no');
+const noTexts = ["点不到吧～", "再点变小猪🐷！", "放弃吧笨蛋！", "不许点这个！", "抓不到我略略略~", "你还点？", "手速太慢啦！", "快去点【超级想】！", "哼，休想拒绝我"];
+let noClickCount = 0;
+
+function runAway(e) {
+    if(e.type === 'touchstart') e.preventDefault(); 
+    if (noClickCount >= 10) return;
+    
+    noClickCount++;
+    
+    if (noClickCount >= 10) {
+        showPopup('😭', '本系统认输！', '好嘛好嘛，算你厉害！\n但本系统拒绝执行你的操作，\n已自动强行帮你勾选【超级想】！🎉');
+        window.popupCallback = () => {
+            startTransition(2, '强行篡改答案中...');
+        };
+        return;
+    }
+
+    noBtn.innerText = noTexts[noClickCount % noTexts.length];
+    
+    const maxX = window.innerWidth - noBtn.offsetWidth - 20;
+    const maxY = window.innerHeight - noBtn.offsetHeight - 20;
+    
+    const randomX = Math.max(10, Math.random() * maxX);
+    const randomY = Math.max(80, Math.random() * maxY); 
+
+    noBtn.style.position = 'fixed';
+    noBtn.style.left = randomX + 'px';
+    noBtn.style.top = randomY + 'px';
+    noBtn.style.zIndex = '9999';
+}
+
+noBtn.addEventListener('mouseover', runAway);
+noBtn.addEventListener('touchstart', runAway, {passive: false});
+
+function startTransition(targetIndex, msg) {
+    const overlay = document.getElementById('transition');
+    const numEl = document.getElementById('trans-num');
+    const msgEl = document.getElementById('trans-msg');
+    
+    overlay.classList.add('show');
+    msgEl.innerText = msg;
+    msgEl.style.opacity = '0';
+    
+    let countdown = 3;
+    numEl.innerText = countdown;
+    
+    let iv = setInterval(() => {
+        countdown--;
+        if(countdown > 0) {
+            numEl.innerText = countdown;
+            numEl.style.transform = 'scale(1.3)';
+            setTimeout(() => numEl.style.transform = 'scale(1)', 150);
+            if(countdown === 2) msgEl.style.opacity = '1';
+        } else {
+            clearInterval(iv);
+            overlay.classList.remove('show');
+            document.querySelectorAll('section').forEach(s => s.classList.remove('active-page'));
+            document.getElementById('page-' + targetIndex).classList.add('active-page');
+            document.getElementById('page-' + targetIndex).scrollTop = 0;
+        }
+    }, 1000);
+}
+
+function showPopup(icon, title, msg) {
+    document.getElementById('popup-icon').innerText = icon;
+    document.getElementById('popup-title').innerText = title;
+    document.getElementById('popup-msg').innerHTML = msg.replace(/\n/g, '<br>');
+    document.getElementById('popup').classList.add('show');
+}
+function closePopup() {
+    document.getElementById('popup').classList.remove('show');
+    if(window.popupCallback) {
+        window.popupCallback();
+        window.popupCallback = null;
+    }
+}
+
+const qData = [
+  {
+    text: '我们在日本第一次奔现，我见到你第一眼，内心最真实的OS是？',
+    opts: [
+      { k: 'A', t: '天哪，她长得比照片/视频里还好看！' },
+      { k: 'B', t: '完了，我今天发型是不是有点乱？' },
+      { k: 'C', t: '太好了，终于抱到真人了，好不真实。' },
+      { k: 'D', t: '以上全部，当时我紧张得心都快跳出来了！' }
+    ],
+    ans: 'D', allowAll: true,
+    feedback: { icon:'💗', title:'恭喜答对！', msg:'其实我当时手心全是汗，满脑子都是你。' }
+  },
+  {
+    text: '这次日本旅行里，你觉得我最喜欢你哪一个瞬间？',
+    opts: [
+      { k: 'A', t: '吃到好吃的东西，眼睛放光的时候。' },
+      { k: 'B', t: '走累了，迷迷糊糊靠在我肩膀上的时候。' },
+      { k: 'C', t: '跟我走在街上，突然转头对我笑的时候。' },
+      { k: 'D', t: '每一个瞬间。只要视线里有你，我都喜欢。' }
+    ],
+    ans: 'D', allowAll: true,
+    feedback: { icon:'📸', title:'解锁记忆', msg:'其实不管你选哪个，答案都是对的。因为只要视线里有你，你所有的瞬间我都喜欢。' }
+  },
+  {
+    text: '马来西亚和中国虽然隔着海洋，但你知道从我的心到你的心，距离是多少吗？',
+    isInput: true,
+    feedback: { icon:'💘', title:'笨蛋，答案是 0 公里。', msg:'因为你一直都住在我的心里，一秒钟都没有离开过。' }
+  },
+  {
+    text: '每次我们打视频电话，最常出现的、属于我们两人的秘密梗是什么？',
+    opts: [
+      { k: 'A', t: '"吃了吗？饿不饿，多吃点"' },
+      { k: 'B', t: '"你先挂" "不，你先挂"' },
+      { k: 'C', t: '"睡着了吗？"' }
+    ],
+    ans: 'A', allowAll: false,
+    feedback: { icon:'📞', title:'默契满分', msg:'“吃了吗？饿不饿”——在这个什么都讲究效率的时代，我只关心你有没有好好照顾自己。' },
+    wrong: { icon:'😤', title:'哼，这也能选错？', msg:'看来有人皮痒了，再给你一次重新组织语言的机会！' }
+  }
+];
+
+let currQ = 0;
+let selOpt = null;
+
+function renderQuiz() {
+    if(currQ >= qData.length) return;
+    const q = qData[currQ];
+    let html = `<div class="qcard"><div style="color:var(--pink); font-size:0.9rem; font-weight:600; margin-bottom:1rem;">QUESTION 0${currQ+1}</div><div class="qtext">${q.text}</div>`;
+    
+    if(q.isInput) {
+        html += `<div class="opt-free"><input type="text" id="q-input" placeholder="输入任意内容..."/></div>`;
+    } else {
+        q.opts.forEach(o => {
+            html += `<div class="opt" onclick="selectOpt(this, '${o.k}')"><strong style="color:var(--pink); width:20px;">${o.k}</strong> <span>${o.t}</span></div>`;
+        });
+    }
+    html += `<div style="text-align:right; margin-top:1.5rem;"><button class="btn" style="padding:0.6rem 2rem; margin-top:0;" onclick="submitQuiz()">校验答案</button></div></div>`;
+    document.getElementById('qwrap').innerHTML = html;
+}
+
+function selectOpt(el, k) {
+    document.querySelectorAll('.opt').forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected');
+    selOpt = k;
+}
+
+function updateAvatars(step) {
+    const total = qData.length;
+    const pct = (step / total) * 100;
+    
+    document.getElementById('prog-fill').style.width = pct + '%';
+    const maxMove = 40; 
+    document.getElementById('fig-kl').style.left = (10 + (pct/100)*maxMove) + '%';
+    document.getElementById('fig-wh').style.right = (10 + (pct/100)*maxMove) + '%';
+
+    if(step >= total) {
+        setTimeout(() => {
+            document.getElementById('fig-kl').style.opacity = '0';
+            document.getElementById('fig-wh').style.opacity = '0';
+            document.getElementById('fig-hug').classList.add('hug-active');
+        }, 800);
+    }
+}
+
+function submitQuiz() {
+    const q = qData[currQ];
+    let isCorrect = true;
+    const soundCorrect = document.getElementById('sound-correct');
+    const soundWrong = document.getElementById('sound-wrong');
+
+    if(q.isInput) {
+        const val = document.getElementById('q-input').value.trim();
+        if(!val) { showPopup('⚠️', '警告', '输入框不能为空哦'); return; }
+    } else {
+        if(!selOpt) { showPopup('⚠️', '警告', '请先选择一个选项'); return; }
+        if(!q.allowAll && selOpt !== q.ans) {
+            isCorrect = false;
+        }
+    }
+    
+    if (!isCorrect) {
+        soundWrong.currentTime = 0;
+        soundWrong.play().catch(e => console.log(e));
+        const w = q.wrong || { icon:'❌', title:'错误', msg:'再仔细想想？' };
+        showPopup(w.icon, w.title, w.msg);
+        return;
+    } else {
+        soundCorrect.currentTime = 0;
+        soundCorrect.play().catch(e => console.log(e));
+        window.popupCallback = () => {
+            currQ++;
+            selOpt = null;
+            updateAvatars(currQ);
+            if(currQ < qData.length) {
+                renderQuiz();
+            } else {
+                document.getElementById('qwrap').innerHTML = `<div style="text-align:center; margin-top:3rem;"><h3 style="color:var(--pink); font-family:var(--serif); font-size:1.5rem; margin-bottom:1rem;">身份验证：100% 契合</h3><p style="color:var(--muted); margin-bottom:2rem;">你就是那个一直住在我心里的人</p><button class="btn" style="margin-top:0;" onclick="startTransition(4, '礼物清单正在生成...')">拆开终极礼物</button></div>`;
+            }
+        };
+        showPopup(q.feedback.icon, q.feedback.title, q.feedback.msg);
+    }
+}
+renderQuiz();
+
+const giftData = [
+  { i:'🏰', t:'上海迪士尼', d:'专属领航员带你看城堡烟花' },
+  { i:'✈️', t:'飞越山海', d:'为你安排好行程' },
+  { i:'🍜', t:'吉隆坡夜市', d:'带你吃遍美食' },
+  { i:'📸', t:'专属快门', d:'再见时等你一起再合照' },
+  { i:'🧸', t:'大大的拥抱', d:'见面第一秒补齐所有拥抱' },
+  { i:'💌', t:'未来的底气', d:'无论多远，我对我们的未来很坚定' }
+];
+
+const gGrid = document.getElementById('gifts-grid');
+giftData.forEach(g => {
+    let b = document.createElement('div');
+    b.className = 'gift-box';
+    b.innerHTML = `<div class="gift-lid">${g.i}</div><div class="gift-content"><h4>[ ${g.t} ]</h4><p>${g.d}</p></div>`;
+    b.onclick = () => {
+        if(b.classList.contains('opened')) return;
+        b.classList.add('opened');
+        if(document.querySelectorAll('.gift-box.opened').length === giftData.length) {
+            document.getElementById('btn-final').style.display = 'inline-block';
+        }
+    };
+    gGrid.appendChild(b);
+});
+
+const photoData = [
+    { img: 'e65223439ca0832c1a415b7cdec5f393.jpg', txt: 'USJ怪物猎人餐厅的干杯，是我们跨越屏幕后最真实的烟火气。' },
+    { img: 'a7dfa33f548151c3ce524c02e76c9d0a.jpg', txt: '讲台前装作老师的你，可爱得让我甘愿当一辈子你的专属笨学生。' },
+    { img: '003085f592758070a9056773c53d0e58.jpg', txt: 'USJ地标前的合影，阳光和你，都恰到好处的明媚。' },
+    { img: '622fe4be3e1a0f0e8286c5a9938a24c9.jpg', txt: '泡完温泉后自然地把脚搭在我脚上。那一刻的依赖，比任何情话都让我安心。' },
+    { img: '515b024741bae5117d3cba50e98d3cce.jpg', txt: '这是我最偏爱的一张。海风吹拂你的长发，而你眼底的开心，是我最想守护的风景。' },
+    { img: 'dc654ac5becf7c7a2fead7a8ddf94f5b.jpg', txt: '赶作业累到倒头就睡的模样。看着你安静的睡颜，真想替你分担所有的疲惫。' },
+    { img: '5ed2f64118c781c33280e765c3b1bc0a.jpg', txt: '在奈良被小鹿“围攻”到手足无措的你，慌乱中透着让我心动的可爱。' },
+    { img: 'c1e183c893e7e1bc0392fef66ca3b314.jpg', txt: '路过便利店特意买面包喂鸽子。你骨子里的这份温柔，是我迷恋你的原罪。' },
+    { img: '9f499e2915a1026c5f9710b364ac83d1.jpg', txt: '我们的第一张合照。画质或许不完美，但在我人生的时间轴上，它是最高清的起点。' },
+    { img: '84f87fc7ef1962627e38787d320666b0.jpg', txt: '我手机里存下关于你的第一张特写。谁能想到，镜头里的这个女孩，会成为我未来的全部重心？' }
+];
+
+const photoGrid = document.getElementById('photo-grid');
+photoData.forEach(p => {
+    let card = document.createElement('div');
+    card.className = 'photo-card';
+    card.innerHTML = `
+        <div class="photo-ph">
+            <img src="${p.img}" alt="memory">
+        </div>
+        <div class="photo-txt">${p.txt}</div>
+    `;
+    photoGrid.appendChild(card);
+});
+</script>
+</body>
+</html>
