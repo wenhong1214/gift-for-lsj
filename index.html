@@ -41,6 +41,17 @@ body {
 .star { position: absolute; border-radius: 50%; background: #fff; animation: twinkle var(--dur) ease-in-out infinite alternate; }
 @keyframes twinkle { 0% { opacity: 0.1; transform: scale(0.8); } 100% { opacity: 0.8; transform: scale(1.2); } }
 
+/* --- 互动：全局点击爱心特效 --- */
+@keyframes floatUp {
+    0% { transform: translateY(0) scale(1); opacity: 1; }
+    100% { transform: translateY(-50px) scale(1.5); opacity: 0; }
+}
+.click-heart {
+    position: fixed; pointer-events: none; z-index: 99999;
+    font-size: 1.2rem;
+    animation: floatUp 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
 /* --- 启动屏 --- */
 #entry-screen {
     position: fixed; inset: 0; z-index: 10000;
@@ -97,7 +108,6 @@ section.active-page { opacity: 1; pointer-events: all; z-index: 10; }
 #map-visualizer {
     position: relative; width: 100%; max-width: 680px; margin-bottom: 1rem;
     border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.5); overflow: hidden;
-    /* 关键修复：禁止被 Flexbox 压扁，维持原图比例 */
     flex-shrink: 0; 
 }
 #map-svg { display: block; width: 100%; height: auto; }
@@ -117,9 +127,7 @@ section.active-page { opacity: 1; pointer-events: all; z-index: 10; }
 .ccard-sub { font-size: 0.75rem; color: var(--muted); }
 .cval { font-size: 1.5rem; font-weight: 600; font-family: var(--serif); margin: 10px 0; }
 
-/* =========================================================================
-   高级感按钮
-   ========================================================================= */
+/* 高级感按钮 */
 .btn { 
     display: inline-block; padding: 0.8rem 3rem; 
     background: linear-gradient(135deg, var(--pink) 0%, var(--pink-dim) 100%); 
@@ -137,7 +145,7 @@ section.active-page { opacity: 1; pointer-events: all; z-index: 10; }
     box-shadow: 0 2px 10px rgba(236, 72, 153, 0.4), inset 0 3px 6px rgba(0,0,0,0.2) !important;
 }
 
-/* --- 逃跑按钮页面专属动画与样式 --- */
+/* 逃跑按钮 */
 .btn-pulse { animation: heartPulse 1.2s infinite alternate; }
 @keyframes heartPulse {
     0% { transform: scale(1); box-shadow: 0 6px 20px rgba(236, 72, 153, 0.4), inset 0 2px 2px rgba(255,255,255,0.3); }
@@ -158,7 +166,17 @@ section.active-page { opacity: 1; pointer-events: all; z-index: 10; }
 /* --- PAGE 2: LETTER --- */
 .letter-wrap { max-width: 600px; width: 100%; background: var(--surface); padding: 3rem; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); }
 .letter-body { font-family: var(--serif); font-size: 1.1rem; line-height: 2.2; color: #e2e8f0; }
-.letter-body p { margin-bottom: 1.5rem; }
+
+/* 互动：告白信逐句渐显动画（仅当页面激活时触发） */
+.letter-body p { margin-bottom: 1.5rem; opacity: 0; transform: translateY(20px); }
+.active-page .letter-body p { animation: fadeInUp 1s forwards; }
+.active-page .letter-body p:nth-child(1) { animation-delay: 0.5s; }
+.active-page .letter-body p:nth-child(2) { animation-delay: 2.5s; }
+.active-page .letter-body p:nth-child(3) { animation-delay: 4.5s; }
+.active-page .letter-body p:nth-child(4) { animation-delay: 6.5s; }
+.active-page .letter-body p:nth-child(5) { animation-delay: 8.5s; }
+@keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+
 .highlight { color: var(--pink); font-weight: 500; }
 
 /* --- PAGE 3: TREASURE --- */
@@ -200,21 +218,35 @@ section.active-page { opacity: 1; pointer-events: all; z-index: 10; }
 .gift-content h4 { color: var(--pink); margin-bottom: 5px; font-size: 0.9rem; }
 .gift-content p { font-size: 0.8rem; color: var(--muted); }
 
+/* 互动：盲盒摇晃引诱效果 */
+@keyframes shake {
+  0% { transform: rotate(0deg); }
+  25% { transform: rotate(5deg) scale(1.05); }
+  50% { transform: rotate(0deg) scale(1.05); }
+  75% { transform: rotate(-5deg) scale(1.05); }
+  100% { transform: rotate(0deg); }
+}
+.gift-box:not(.opened):hover {
+    animation: shake 0.5s ease-in-out infinite;
+    border-color: var(--pink);
+    box-shadow: 0 0 15px rgba(236, 72, 153, 0.4);
+}
+
 /* --- PAGE 5: PHOTOS --- */
 .photo-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; max-width: 800px; width: 100%; margin-bottom: 3rem; }
 .photo-card { background: var(--surface); border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); transition: transform 0.3s; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
 .photo-card:hover { transform: translateY(-5px); border-color: var(--pink-dim); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
 .photo-ph { background: var(--surface2); width: 100%; aspect-ratio: 4/3; overflow: hidden; }
-.photo-ph img { width: 100%; height: 100%; object-fit: cover; border-bottom: 1px solid rgba(255,255,255,0.05); }
+.photo-ph img { width: 100%; height: 100%; object-fit: cover; border-bottom: 1px solid rgba(255,255,255,0.05); transition: transform 0.3s; }
+.photo-card:hover .photo-ph img { transform: scale(1.05); }
 .photo-txt { padding: 1.2rem; font-family: var(--serif); font-size: 0.9rem; color: #cbd5e1; line-height: 1.6; }
 
-/* --- 移动端适配 --- */
+/* 移动端适配 */
 #page-1, #page-2, #page-3, #page-4, #page-5 { justify-content: flex-start; padding-top: 6rem; padding-bottom: 4rem; }
 @media (max-width: 600px) {
     section { padding: 1rem; padding-top: 5rem; }
     .map-intro h1 { font-size: 1.6rem; }
     
-    /* 关键修复：让卡片在手机上保持左右排列 */
     .counters { flex-direction: row; gap: 10px; }
     .ccard { padding: 1.2rem 0.5rem; }
     .ccard-title { font-size: 0.75rem; }
@@ -278,6 +310,13 @@ section.active-page { opacity: 1; pointer-events: all; z-index: 10; }
     <p id="popup-msg" style="color:var(--muted); line-height:1.6; margin-bottom:2rem;"></p>
     <button class="btn" style="margin-top:0; padding: 0.6rem 2rem;" onclick="closePopup()">我知道了</button>
   </div>
+</div>
+
+<!-- 互动：照片全屏预览图层 -->
+<div id="photo-viewer" style="position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:10000; display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:0.3s; flex-direction:column; padding:20px;">
+    <img id="viewer-img" style="max-width:100%; max-height:80vh; border-radius:10px; box-shadow:0 0 30px rgba(236,72,153,0.3); transition: transform 0.3s;" src="" />
+    <p id="viewer-txt" style="color:#fff; margin-top:20px; font-family:var(--serif); text-align:center; font-size:1rem; line-height:1.6;"></p>
+    <button class="btn btn-gray" style="margin-top:20px; z-index:10001;" onclick="closeViewer()">关闭回忆</button>
 </div>
 
 <!-- PAGE 0: 地图 -->
@@ -351,7 +390,7 @@ section.active-page { opacity: 1; pointer-events: all; z-index: 10; }
 <!-- PAGE 2: 告白信 -->
 <section id="page-2">
   <div class="letter-wrap">
-    <p style="color:var(--pink); margin-bottom:2rem; font-weight:600; letter-spacing:2px;">致 李思婧，</p>
+    <p style="color:var(--pink); font-weight:600; letter-spacing:2px; font-family:var(--sans);">致 李思婧，</p>
     <div class="letter-body">
       <p>以前，你总是在屏幕那头，只有具体的文字。直到前阵子，我们在日本的火车站相遇。</p>
       <p>那一刻，所有的文字都变成了你<span class="highlight">皮肤的温度</span>，所有的语音都变成了你<span class="highlight">真实的笑声</span>。我真切地牵到了你的手，比我想象的还要软；我真切地看到了你吃美食时满足的眼神，比视频里还要可爱。</p>
@@ -408,6 +447,18 @@ section.active-page { opacity: 1; pointer-events: all; z-index: 10; }
 </section>
 
 <script>
+// --- 互动：全局点击飘落爱心特效 ---
+document.addEventListener('click', function(e) {
+    const heart = document.createElement('div');
+    heart.className = 'click-heart';
+    heart.innerText = ['💖', '✨', '🥰', '💌', '🌸'][Math.floor(Math.random() * 5)];
+    heart.style.left = (e.clientX - 10) + 'px';
+    heart.style.top = (e.clientY - 10) + 'px';
+    document.body.appendChild(heart);
+    setTimeout(() => heart.remove(), 1000);
+});
+
+// 星空生成
 for(let i=0; i<100; i++){
   let s = document.createElement('div');
   s.className = 'star';
@@ -554,7 +605,7 @@ function runAway(e) {
     if (noClickCount >= 10) {
         showPopup('😭', '本系统认输！', '好嘛好嘛，算你厉害！\n但本系统拒绝执行你的操作，\n已自动强行帮你勾选【超级想】！🎉');
         window.popupCallback = () => {
-            startTransition(2, '强行篡改答案中...');
+            startTransition(2, '心口不一的家伙，强行篡改答案加载信件中...');
         };
         return;
     }
@@ -709,9 +760,18 @@ function submitQuiz() {
     const soundCorrect = document.getElementById('sound-correct');
     const soundWrong = document.getElementById('sound-wrong');
 
+    // 互动：宽容的输入验证逻辑
     if(q.isInput) {
         const val = document.getElementById('q-input').value.trim();
         if(!val) { showPopup('⚠️', '警告', '输入框不能为空哦'); return; }
+        
+        // 只要包含 0、零、没、心 等字眼都算答对，增强女孩们的体验
+        if(val.includes('0') || val.includes('零') || val.includes('没') || val.includes('心')) {
+            isCorrect = true;
+        } else {
+            isCorrect = false;
+            q.wrong = { icon:'📏', title:'距离测算失败', msg:'笨蛋，你再想想！\n提示：看看你的心里面。' };
+        }
     } else {
         if(!selOpt) { showPopup('⚠️', '警告', '请先选择一个选项'); return; }
         if(!q.allowAll && selOpt !== q.ans) {
@@ -784,14 +844,31 @@ const photoGrid = document.getElementById('photo-grid');
 photoData.forEach(p => {
     let card = document.createElement('div');
     card.className = 'photo-card';
+    card.style.cursor = 'pointer'; // 互动：增加点击手势
+    
     card.innerHTML = `
         <div class="photo-ph">
             <img src="${p.img}" alt="memory">
         </div>
         <div class="photo-txt">${p.txt}</div>
     `;
+    
+    // 互动：点击呼出全屏预览
+    card.onclick = () => {
+        document.getElementById('viewer-img').src = p.img;
+        document.getElementById('viewer-txt').innerText = p.txt;
+        document.getElementById('photo-viewer').style.opacity = '1';
+        document.getElementById('photo-viewer').style.pointerEvents = 'all';
+    };
+    
     photoGrid.appendChild(card);
 });
+
+// 关闭相册大图
+function closeViewer() {
+    document.getElementById('photo-viewer').style.opacity = '0';
+    document.getElementById('photo-viewer').style.pointerEvents = 'none';
+}
 </script>
 </body>
 </html>
