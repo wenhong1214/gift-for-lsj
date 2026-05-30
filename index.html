@@ -217,7 +217,7 @@
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
             overflow: hidden;
             flex-shrink: 0;
-            background-color: #06060f; /* 增强加载时的兜底背景色 */
+            background-color: #06060f;
         }
         #map-svg {
             display: block;
@@ -977,8 +977,8 @@
             .photo-txt {
                 font-size: 0.95rem;
             }
+            
             .btn {
-                margin-bottom: 1rem;
                 padding: 0.7rem 2rem;
                 font-size: 0.9rem;
             }
@@ -1019,24 +1019,39 @@
                 font-size: 5rem;
             }
 
+            /* 🌟 首页按钮优化对齐和大小 */
             .home-actions {
-                display: flex;
-                gap: 12px;
-                justify-content: center;
-                margin-top: 5rem;   /* 原来是 1.5rem，改大一点 */
-                flex-wrap: wrap;
+                gap: 8px;
+                flex-wrap: nowrap !important;
+                align-items: center !important; /* 强制垂直居中对齐 */
+                width: 100%;
             }
-            .home-actions .btn,
             .home-actions .btn-gray {
                 flex: 1 1 auto;
                 min-width: 0;
-                padding: 0.5rem 0.4rem;
-                font-size: 0.75rem;
-                letter-spacing: 1px;
+                padding: 0.5rem 0.2rem;
+                font-size: 0.7rem;
+                letter-spacing: 0px;
                 white-space: nowrap;
+                text-align: center;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin: 0 !important; /* 清除所有扰乱对齐的 margin */
             }
             .home-actions .btn {
+                flex: 1.3 1 auto; /* 让中间按钮占据更多空间，变得稍大 */
+                min-width: 0;
+                padding: 0.7rem 0.5rem; /* 增加点击区域和视觉体积 */
+                font-size: 0.9rem; /* 字体比两边大 */
+                letter-spacing: 1px;
+                white-space: nowrap;
                 font-weight: 600;
+                text-align: center;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin: 0 !important; /* 彻底解决中间按钮被往上顶的问题 */
             }
         }
 
@@ -1167,10 +1182,12 @@
             <div class="greeting-date" id="greeting-date">生成中...</div>
             <div class="greeting-text" id="greeting-text">正在从云端抽取今天的专属浪漫电波...📡</div>
         </div>
-        <div class="home-actions" style="display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin-top: 1.5rem;">
-            <button class="btn-gray" style="margin-top:0; border:1px dashed var(--pink);" onclick="openGame()">🎮 接住我的爱</button>
-            <button class="btn" style="margin-top:0; padding:0.6rem 2rem;" onclick="startTransition(1, '正在建立神经连线...')">开启回忆录</button>  
-            <button class="btn-gray" style="margin-top:0; border:1px dashed var(--blue);" onclick="openChat()">💬 专属树洞陪伴</button>
+        
+        <!-- 🌟 按钮布局优化：加入 align-items:center，并直接修改了 HTML 里的前后顺序 -->
+        <div class="home-actions" style="display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:center; margin-top: 1.5rem; width:100%;">
+            <button class="btn-gray" onclick="openGame()">🎮 接住我的爱</button>
+            <button class="btn btn-pulse" onclick="startTransition(1, '正在建立神经连线...')">开启回忆录</button>
+            <button class="btn-gray" onclick="openChat()">💬 专属树洞陪伴</button>
         </div>
     </section>
 
@@ -1637,14 +1654,9 @@
                 if (!val) { showPopup('⚠️', '警告', '输入框不能为空哦'); return; }
                 if (val.includes('0') || val.includes('零') || val.includes('没') || val.includes('心')) {
                     isCorrect = true;
-                }
-                if (/0|零/.test(val)) {
-                    // 替换为表扬专属弹窗
-                    q.feedback = {
-                        icon: '🎉',
-                        title: '咦？你怎么知道的？！',
-                        msg: '这可是我们俩的秘密地图，起点是你，终点也是你，距离永远归零。❤️'
-                    };
+                } else {
+                    isCorrect = false;
+                    q.wrong = { icon: '📏', title: '距离测算失败', msg: '笨蛋，你再想想！' };
                 }
             } else {
                 if (!selOpt) { showPopup('⚠️', '警告', '请先选择一个选项'); return; }
