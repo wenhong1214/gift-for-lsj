@@ -58,7 +58,7 @@ export default async function handler(req, res) {
                 'X-Title': '专属领航员'
             },
             body: JSON.stringify({
-                model: process.env.MODEL_NAME || 'deepseek/deepseek-chat', // OpenRouter 上的模型标识
+                model: process.env.MODEL_NAME || 'deepseek/deepseek-v4-flash', // OpenRouter 上的模型标识
                 messages: messages,
                 temperature: 0.8,
             })
