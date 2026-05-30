@@ -1428,9 +1428,10 @@
             fetchDailyGreeting();
 
             try {
-                const ipRes = await fetch('https://get.geojs.io/v1/ip/geo.json');
+                const ipRes = await fetch('https://ipapi.co/json/');
                 const ipData = await ipRes.json();
-                const location = ipData.region || ipData.city || '远方';
+                // 优先城市，其次地区，最后国家
+                const location = ipData.city || ipData.region || ipData.country_name || '远方';
                 const greeting = document.getElementById('ip-greeting');
                 greeting.innerText = `✨ 检测到有一位来自 [${location}] 的漂亮女孩正在访问本站...`;
                 greeting.style.opacity = '1';
