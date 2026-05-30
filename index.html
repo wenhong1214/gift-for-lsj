@@ -1252,6 +1252,7 @@
             <span style="color:var(--pink); font-size: 1.4rem; font-weight: 500;">8月，我们再相见。</span><br/>
             <span style="color:var(--muted); font-size: 0.9rem;">（虽然不知道具体是几号，但先放一号预定吧，你的档期跑不掉的）</span>
         </p>
+        <button class="btn" style="margin-top: 2rem; margin-bottom: 3rem;" onclick="goHome()">🏠 返回主页</button>
     </section>
 
     <section id="page-chat">
@@ -1779,6 +1780,29 @@
             if (!btn.classList.contains('paused')) {
                 mainBgm.play().catch(e => console.log('主BGM恢复失败:', e));
             }
+        }
+
+        function goHome() {
+            // 把所有页面的 active-page 类移除
+            document.querySelectorAll('section').forEach(s => s.classList.remove('active-page'));
+            // 给首页加上 active-page
+            document.getElementById('page-0').classList.add('active-page');
+            
+            // 处理音乐：停掉其他页面音乐，恢复主音乐
+            const mainBgm = document.getElementById('bgm');
+            const gameBgm = document.getElementById('game-bgm');
+            const chatBgm = document.getElementById('chat-bgm');
+            const musicBtn = document.getElementById('music-btn');
+            
+            gameBgm.pause();
+            chatBgm.pause();
+            
+            if (!musicBtn.classList.contains('paused')) {
+                mainBgm.play().catch(e => {});
+            }
+            
+            // 让页面回到顶部
+            window.scrollTo(0, 0);
         }
 
         function appendMessage(role, text) {
