@@ -81,7 +81,6 @@
             animation: floatUp 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
         }
 
-        /* --- 启动屏 --- */
         #entry-screen {
             position: fixed;
             inset: 0;
@@ -122,7 +121,6 @@
             }
         }
 
-        /* --- 天气栏 --- */
         .weather-bar {
             position: fixed;
             top: 0;
@@ -151,7 +149,6 @@
             letter-spacing: 1px;
         }
 
-        /* --- 音乐按钮 --- */
         .music-btn {
             position: fixed;
             top: 50px;
@@ -186,7 +183,6 @@
             }
         }
 
-        /* --- 页面容器 --- */
         section {
             position: absolute;
             inset: 0;
@@ -209,7 +205,6 @@
             z-index: 10;
         }
 
-        /* --- PAGE 0: MAP --- */
         #page-0 {
             background: radial-gradient(circle at center, #111827 0%, var(--bg) 100%);
         }
@@ -286,7 +281,6 @@
             margin: 10px 0;
         }
 
-        /* 🌟 每日问候卡片 */
         .greeting-card {
             width: 100%;
             max-width: 500px;
@@ -323,7 +317,6 @@
             color: #e2e8f0;
         }
 
-        /* --- 按钮 --- */
         .btn {
             display: inline-block;
             padding: 0.8rem 3rem;
@@ -386,7 +379,6 @@
             background: rgba(255, 255, 255, 0.15);
         }
 
-        /* --- 过渡动画 --- */
         #transition {
             position: fixed;
             inset: 0;
@@ -420,14 +412,12 @@
             letter-spacing: 2px;
         }
 
-        /* --- PAGE 1: 逃跑按钮 --- */
         #page-1 {
             justify-content: flex-start;
             padding-top: 6rem;
             padding-bottom: 4rem;
         }
 
-        /* --- PAGE 2: LETTER --- */
         #page-2 {
             justify-content: flex-start;
             padding-top: 6rem;
@@ -481,7 +471,6 @@
             font-weight: 500;
         }
 
-        /* --- PAGE 3: TREASURE --- */
         #page-3 {
             justify-content: flex-start;
             padding-top: 6rem;
@@ -607,7 +596,6 @@
             box-shadow: 0 0 10px rgba(236, 72, 153, 0.3);
         }
 
-        /* --- 弹窗 --- */
         #popup {
             position: fixed;
             inset: 0;
@@ -635,7 +623,6 @@
             box-shadow: 0 10px 40px rgba(236, 72, 153, 0.2);
         }
 
-        /* --- PAGE 4: GIFTS --- */
         #page-4 {
             justify-content: flex-start;
             padding-top: 6rem;
@@ -720,7 +707,6 @@
             box-shadow: 0 0 15px rgba(236, 72, 153, 0.4);
         }
 
-        /* --- PAGE 5: PHOTOS --- */
         #page-5 {
             justify-content: flex-start;
             padding-top: 6rem;
@@ -772,7 +758,6 @@
             line-height: 1.6;
         }
 
-        /* --- 照片查看器 --- */
         #photo-viewer {
             position: fixed;
             inset: 0;
@@ -788,7 +773,6 @@
             padding: 20px;
         }
 
-        /* --- 🌟 聊天陪伴舱 --- */
         #page-chat {
             padding: 0;
             justify-content: center;
@@ -917,7 +901,6 @@
             animation: pulse 1.5s infinite;
         }
 
-        /* --- 小游戏页面 --- */
         #page-game {
             padding: 0;
             overflow: hidden;
@@ -1034,6 +1017,24 @@
             .trans-num {
                 font-size: 5rem;
             }
+
+            /* 🌟 首页按钮优化：一行排列、均分宽度 */
+            .home-actions {
+                gap: 6px;
+                flex-wrap: nowrap;
+            }
+            .home-actions .btn,
+            .home-actions .btn-gray {
+                flex: 1 1 auto;
+                min-width: 0;
+                padding: 0.5rem 0.4rem;
+                font-size: 0.75rem;
+                letter-spacing: 1px;
+                white-space: nowrap;
+            }
+            .home-actions .btn {
+                font-weight: 600;
+            }
         }
 
         @media (max-width: 380px) {
@@ -1068,12 +1069,10 @@
 </head>
 <body>
 
-    <!-- 启动进入屏 -->
     <div id="entry-screen">
         <button class="entry-btn" onclick="enterSite()">接收跨国加密信号 💌</button>
     </div>
 
-    <!-- 顶部天气时钟栏 -->
     <div class="weather-bar" id="weather-bar">
         <div class="weather-item">
             <span class="city-name" style="color:var(--pink)">吉隆坡</span>
@@ -1087,22 +1086,20 @@
         </div>
     </div>
 
-    <!-- 音频 -->
     <audio id="bgm" src="bgm.mp3" loop preload="auto"></audio>
     <audio id="sound-correct" src="correct.mp3" preload="auto"></audio>
     <audio id="sound-wrong" src="wrong.mp3" preload="auto"></audio>
     <audio id="game-bgm" src="game-bgm.mp3" loop preload="auto"></audio>
+    <audio id="chat-bgm" src="chat-bgm.mp3" loop preload="auto"></audio>
 
     <div id="music-btn" class="music-btn" onclick="toggleMusic()">🎵</div>
     <div id="stars"></div>
 
-    <!-- 过渡动画 -->
     <div id="transition">
         <div class="trans-num" id="trans-num">3</div>
         <div class="trans-msg" id="trans-msg">正在前往下一段记忆...</div>
     </div>
 
-    <!-- 弹窗 -->
     <div id="popup">
         <div class="popup-box">
             <div id="popup-icon" style="font-size:3rem; margin-bottom:1rem;">💌</div>
@@ -1112,48 +1109,43 @@
         </div>
     </div>
 
-    <!-- 照片全屏预览 -->
     <div id="photo-viewer">
         <img id="viewer-img" style="max-width:100%; max-height:80vh; border-radius:10px; box-shadow:0 0 30px rgba(236,72,153,0.3); transition: transform 0.3s;" src="" alt="记忆照片" />
         <p id="viewer-txt" style="color:#fff; margin-top:20px; font-family:var(--serif); text-align:center; font-size:1rem; line-height:1.6;"></p>
         <button class="btn btn-gray" style="margin-top:20px; z-index:10001;" onclick="closeViewer()">关闭回忆</button>
     </div>
 
-    <!-- ==================== PAGE 0: 首页/地图 ==================== -->
     <section id="page-0">
         <div class="ip-greeting" id="ip-greeting">✨ 正在连接专属星际航线...</div>
-
         <div id="map-visualizer">
             <svg id="map-svg" viewBox="0 0 680 560" xmlns="http://www.w3.org/2000/svg">
-                <defs><clipPath id="mc"><rect width="680" height="560" /></clipPath></defs>
-                <rect width="680" height="560" fill="#06060f" />
-                <image href="map.png" x="0" y="0" width="680" height="621" clip-path="url(#mc)" preserveAspectRatio="xMinYMin meet" opacity="0.8" />
-                <path id="path-kl" d="M370,150 C400,130 430,130 463,145" stroke="var(--pink)" stroke-width="2.5" fill="none" stroke-dasharray="200" stroke-dashoffset="200" />
-                <path id="path-wh" d="M327,273 C360,200 400,150 463,145" stroke="var(--blue)" stroke-width="2.5" fill="none" stroke-dasharray="300" stroke-dashoffset="300" />
-                <circle id="dkl" cx="370" cy="150" r="6" fill="var(--pink)" opacity="0" />
-                <circle id="dwh" cx="327" cy="273" r="6" fill="var(--blue)" opacity="0" />
-                <circle id="djp" cx="463" cy="145" r="7" fill="#fff" opacity="0" />
-                <circle id="rkl" cx="370" cy="150" r="6" fill="none" stroke="var(--pink)" stroke-width="2" opacity="0" />
-                <circle id="rwh" cx="327" cy="273" r="6" fill="none" stroke="var(--blue)" stroke-width="2" opacity="0" />
+                <defs><clipPath id="mc"><rect width="680" height="560"/></clipPath></defs>
+                <rect width="680" height="560" fill="#06060f"/>
+                <image href="map.png" x="0" y="0" width="680" height="621" clip-path="url(#mc)" preserveAspectRatio="xMinYMin meet" opacity="0.8"/>
+                <path id="path-kl" d="M370,150 C400,130 430,130 463,145" stroke="var(--pink)" stroke-width="2.5" fill="none" stroke-dasharray="200" stroke-dashoffset="200"/>
+                <path id="path-wh" d="M327,273 C360,200 400,150 463,145" stroke="var(--blue)" stroke-width="2.5" fill="none" stroke-dasharray="300" stroke-dashoffset="300"/>
+                <circle id="dkl" cx="370" cy="150" r="6" fill="var(--pink)" opacity="0"/>
+                <circle id="dwh" cx="327" cy="273" r="6" fill="var(--blue)" opacity="0"/>
+                <circle id="djp" cx="463" cy="145" r="7" fill="#fff" opacity="0"/>
+                <circle id="rkl" cx="370" cy="150" r="6" fill="none" stroke="var(--pink)" stroke-width="2" opacity="0"/>
+                <circle id="rwh" cx="327" cy="273" r="6" fill="none" stroke="var(--blue)" stroke-width="2" opacity="0"/>
                 <text id="lkl" x="370" y="135" text-anchor="middle" font-size="14" fill="var(--pink)" font-family="var(--sans)" font-weight="600" opacity="0" letter-spacing="1px">武汉</text>
                 <text id="lwh" x="327" y="300" text-anchor="middle" font-size="14" fill="var(--blue)" font-family="var(--sans)" font-weight="600" opacity="0" letter-spacing="1px">吉隆坡</text>
                 <text id="ljp" x="475" y="140" text-anchor="start" font-size="14" fill="#ffffff" font-family="var(--sans)" font-weight="600" opacity="0" letter-spacing="1px">相遇大阪</text>
                 <g id="fw" opacity="0">
-                    <line x1="463" y1="145" x2="463" y2="117" stroke="#f0c060" stroke-width="2" />
-                    <line x1="463" y1="145" x2="463" y2="173" stroke="#f0c060" stroke-width="2" />
-                    <line x1="463" y1="145" x2="435" y2="145" stroke="#e890b8" stroke-width="2" />
-                    <line x1="463" y1="145" x2="491" y2="145" stroke="#e890b8" stroke-width="2" />
-                    <line x1="463" y1="145" x2="443" y2="125" stroke="#7eb8e8" stroke-width="2" />
-                    <line x1="463" y1="145" x2="483" y2="165" stroke="#7eb8e8" stroke-width="2" />
+                    <line x1="463" y1="145" x2="463" y2="117" stroke="#f0c060" stroke-width="2"/>
+                    <line x1="463" y1="145" x2="463" y2="173" stroke="#f0c060" stroke-width="2"/>
+                    <line x1="463" y1="145" x2="435" y2="145" stroke="#e890b8" stroke-width="2"/>
+                    <line x1="463" y1="145" x2="491" y2="145" stroke="#e890b8" stroke-width="2"/>
+                    <line x1="463" y1="145" x2="443" y2="125" stroke="#7eb8e8" stroke-width="2"/>
+                    <line x1="463" y1="145" x2="483" y2="165" stroke="#7eb8e8" stroke-width="2"/>
                 </g>
             </svg>
         </div>
-
         <div class="map-intro">
             <h1>跨越 3300 公里的双向奔赴</h1>
             <p>剥离复杂的地理，我们的坐标就是唯一的引力场</p>
         </div>
-
         <div class="counters">
             <div class="ccard">
                 <div class="ccard-title">距离日本奔现已过去</div>
@@ -1166,36 +1158,27 @@
                 <div class="ccard-sub">坚定的异国恋期盼</div>
             </div>
         </div>
-
-        <!-- 🌟 每日问候卡片 -->
         <div class="greeting-card">
             <div class="greeting-date" id="greeting-date">生成中...</div>
             <div class="greeting-text" id="greeting-text">正在从云端抽取今天的专属浪漫电波...📡</div>
         </div>
-
-        <div style="display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin-top: 1.5rem;">
+        <div class="home-actions" style="display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin-top: 1.5rem;">
             <button class="btn" style="margin-top:0; padding:0.6rem 2rem;" onclick="startTransition(1, '正在建立神经连线...')">开启回忆录</button>
             <button class="btn-gray" style="margin-top:0; border:1px dashed var(--pink);" onclick="openGame()">🎮 接住我的爱</button>
             <button class="btn-gray" style="margin-top:0; border:1px dashed var(--blue);" onclick="openChat()">💬 专属树洞陪伴</button>
         </div>
     </section>
 
-    <!-- ==================== PAGE 1: 逃跑按钮 ==================== -->
     <section id="page-1">
         <div style="text-align:center; max-width: 500px; margin-top: 5rem;">
             <h2 style="font-family:var(--serif); font-size:2.2rem; color:var(--pink); margin-bottom:1.5rem; font-weight:500;">异国连线请求 📡</h2>
-            <p style="font-size:1.1rem; line-height:1.8; color:var(--text); margin-bottom: 4rem;">
-                既然距离下一次见面还有这么久...<br>
-                专属领航员想提前确认一下：<br><br>
-                <span style="color:var(--gold); font-size:1.3rem; font-weight:600; letter-spacing: 2px;">这段时间，你有没有超级想我？</span>
-            </p>
+            <p style="font-size:1.1rem; line-height:1.8; color:var(--text); margin-bottom: 4rem;">既然距离下一次见面还有这么久...<br>专属领航员想提前确认一下：<br><br><span style="color:var(--gold); font-size:1.3rem; font-weight:600; letter-spacing: 2px;">这段时间，你有没有超级想我？</span></p>
             <button class="btn btn-pulse" style="font-size: 1.4rem; padding: 1.2rem 4rem; margin-bottom: 2rem; border-radius: 40px;" onclick="startTransition(2, '心意已接收，加载信件...')">想！超级想！🥰</button>
             <br><br>
             <button id="btn-no" class="btn-gray">不想，一点都不想</button>
         </div>
     </section>
 
-    <!-- ==================== PAGE 2: 告白信 ==================== -->
     <section id="page-2">
         <div class="letter-wrap">
             <p style="color:var(--pink); font-weight:600; letter-spacing:2px; font-family:var(--sans);">致 李思婧，</p>
@@ -1211,7 +1194,6 @@
         <button class="btn" onclick="startTransition(3, '心跳验证系统启动...')">接受考验</button>
     </section>
 
-    <!-- ==================== PAGE 3: 答题验证 ==================== -->
     <section id="page-3">
         <div class="treasure-wrap">
             <div style="text-align:center; margin-bottom:2rem;">
@@ -1228,7 +1210,6 @@
         </div>
     </section>
 
-    <!-- ==================== PAGE 4: 盲盒礼物 ==================== -->
     <section id="page-4">
         <div style="text-align:center; margin-bottom:3rem;">
             <h2 style="font-family:var(--serif); font-size:2rem; font-weight:400; letter-spacing:2px;">礼物拆解</h2>
@@ -1238,7 +1219,6 @@
         <button class="btn" id="btn-final" style="display:none;" onclick="startTransition(5, '正在加载最终记忆...')">解锁最终站</button>
     </section>
 
-    <!-- ==================== PAGE 5: 照片墙 ==================== -->
     <section id="page-5">
         <div style="text-align:center; margin-bottom:3rem;">
             <h2 style="font-family:var(--serif); font-size:2rem; font-weight:400; letter-spacing:2px;">那些灿烂的切片</h2>
@@ -1246,13 +1226,12 @@
         </div>
         <div class="photo-grid" id="photo-grid"></div>
         <p style="font-family:var(--serif); font-size:1.2rem; text-align:center; line-height:2; margin-bottom: 4rem;">
-            无论相隔多远，你都是我最想奔赴的方向。<br />
-            <span style="color:var(--pink); font-size: 1.4rem; font-weight: 500;">8月，我们再相见。</span><br />
+            无论相隔多远，你都是我最想奔赴的方向。<br/>
+            <span style="color:var(--pink); font-size: 1.4rem; font-weight: 500;">8月，我们再相见。</span><br/>
             <span style="color:var(--muted); font-size: 0.9rem;">（虽然不知道具体是几号，但先放一号预定吧，你的档期跑不掉的）</span>
         </p>
     </section>
 
-    <!-- ==================== 🌟 PAGE CHAT: AI聊天陪伴舱 ==================== -->
     <section id="page-chat">
         <button class="btn-gray" style="position: absolute; top: 20px; left: 20px; z-index: 10; padding: 5px 15px;" onclick="closeChat()">← 返回主页</button>
         <div class="chat-container">
@@ -1270,7 +1249,6 @@
         </div>
     </section>
 
-    <!-- ==================== PAGE GAME: 小游戏 ==================== -->
     <section id="page-game">
         <div style="position: absolute; top: 12%; width: 80%; max-width: 400px; text-align: center; z-index: 10; pointer-events: none;">
             <h3 style="color: var(--pink); font-family: var(--serif); margin-bottom: 15px; letter-spacing: 2px;">接住我的爱 💖</h3>
@@ -1294,9 +1272,6 @@
     </section>
 
     <script>
-        // ============================
-        // 全局变量
-        // ============================
         let gameActive = false;
         let gameScore = 0;
         let animationId;
@@ -1307,15 +1282,12 @@
         let whTempGlobal = '25°C';
         let klTempGlobal = '30°C';
         let daysToMeetGlobal = 0;
+        let mapAnimationInterval = null; // 🌟 修复：保存定时器引用
 
         const canvas = document.getElementById('game-canvas');
         const ctx = canvas ? canvas.getContext('2d') : null;
 
-        // ============================
-        // 全局点击爱心特效
-        // ============================
         document.addEventListener('click', function(e) {
-            // 聊天区域不触发爱心特效（避免干扰输入）
             if (e.target.closest('#page-chat') || e.target.closest('.chat-input-area') || e.target.closest('#chat-input')) return;
             const heart = document.createElement('div');
             heart.className = 'click-heart';
@@ -1326,9 +1298,6 @@
             setTimeout(() => heart.remove(), 1000);
         });
 
-        // ============================
-        // 星空背景生成
-        // ============================
         for (let i = 0; i < 100; i++) {
             let s = document.createElement('div');
             s.className = 'star';
@@ -1341,9 +1310,6 @@
             document.getElementById('stars').appendChild(s);
         }
 
-        // ============================
-        // 进入网站
-        // ============================
         function enterSite() {
             const entry = document.getElementById('entry-screen');
             const bgm = document.getElementById('bgm');
@@ -1362,14 +1328,21 @@
             }, 800);
         }
 
-        // ============================
-        // 音乐控制
-        // ============================
         function toggleMusic() {
             const mainBgm = document.getElementById('bgm');
             const gameBgm = document.getElementById('game-bgm');
+            const chatBgm = document.getElementById('chat-bgm');
             const btn = document.getElementById('music-btn');
-            let currentAudio = (typeof gameActive !== 'undefined' && gameActive) ? gameBgm : mainBgm;
+
+            let currentAudio;
+            if (document.getElementById('page-game').classList.contains('active-page')) {
+                currentAudio = gameBgm;
+            } else if (document.getElementById('page-chat').classList.contains('active-page')) {
+                currentAudio = chatBgm;
+            } else {
+                currentAudio = mainBgm;
+            }
+
             if (currentAudio.paused) {
                 currentAudio.play().catch(e => console.log('音乐播放失败:', e));
                 btn.classList.remove('paused');
@@ -1379,9 +1352,6 @@
             }
         }
 
-        // ============================
-        // 天气解析
-        // ============================
         function parseWeather(code) {
             if (code === 0) return '晴 ☀️';
             if (code > 0 && code <= 3) return '多云 ⛅';
@@ -1390,9 +1360,6 @@
             return '阴 ☁️';
         }
 
-        // ============================
-        // 更新倒计时
-        // ============================
         function updateTimers() {
             const d_met = new Date('2026-04-16T00:00:00').getTime();
             const d_next = new Date('2026-08-01T00:00:00').getTime();
@@ -1417,13 +1384,9 @@
             }
         }
 
-        // ============================
-        // 初始化环境（天气 + IP + 时间）
-        // ============================
         async function initEnvironment() {
             updateTimers();
 
-            // 获取天气
             try {
                 const resWh = await fetch('https://api.open-meteo.com/v1/forecast?latitude=30.58&longitude=114.27&current_weather=true');
                 const dataWh = await resWh.json();
@@ -1431,7 +1394,6 @@
                 document.getElementById('wh-temp').innerText = whTempGlobal;
             } catch (e) {
                 document.getElementById('wh-temp').innerText = '获取中...';
-                console.log('武汉天气获取失败');
             }
 
             try {
@@ -1441,13 +1403,10 @@
                 document.getElementById('kl-temp').innerText = klTempGlobal;
             } catch (e) {
                 document.getElementById('kl-temp').innerText = '获取中...';
-                console.log('吉隆坡天气获取失败');
             }
 
-            // 天气和倒计时获取完毕后，触发 AI 问候生成
             fetchDailyGreeting();
 
-            // IP 定位问候
             try {
                 const ipRes = await fetch('https://get.geojs.io/v1/ip/geo.json');
                 const ipData = await ipRes.json();
@@ -1457,7 +1416,6 @@
                 greeting.style.opacity = '1';
                 greeting.style.transform = 'translateY(0)';
             } catch (e) {
-                console.log('IP 获取失败');
                 const greeting = document.getElementById('ip-greeting');
                 greeting.innerText = '✨ 检测到有一位漂亮女孩正在访问本站...';
                 greeting.style.opacity = '1';
@@ -1465,68 +1423,47 @@
             }
         }
 
-        // 时钟更新
         setInterval(() => {
             const now = new Date();
             const timeStr = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
-            const klTimeEl = document.getElementById('kl-time');
-            const whTimeEl = document.getElementById('wh-time');
-            if (klTimeEl) klTimeEl.innerText = timeStr;
-            if (whTimeEl) whTimeEl.innerText = timeStr;
+            document.getElementById('kl-time').innerText = timeStr;
+            document.getElementById('wh-time').innerText = timeStr;
         }, 1000);
-
-        // 倒计时每分钟更新
         setInterval(updateTimers, 60000);
-
-        // 启动初始化
         initEnvironment();
 
-        // ============================
-        // 🌟 AI 每日问候
-        // ============================
         async function fetchDailyGreeting() {
             const dateStr = new Date().toLocaleDateString('zh-CN', { month: 'long', day: 'numeric', weekday: 'long' });
-            const dateEl = document.getElementById('greeting-date');
+            document.getElementById('greeting-date').innerText = `✨ 今日特供电波 - ${dateStr} ✨`;
             const textEl = document.getElementById('greeting-text');
-            if (dateEl) dateEl.innerText = `✨ 今日特供电波 - ${dateStr} ✨`;
-
             try {
                 const res = await fetch('/api/ai', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        action: 'greeting',
-                        whWeather: whTempGlobal,
-                        klWeather: klTempGlobal,
-                        days: daysToMeetGlobal
-                    })
+                    body: JSON.stringify({ action: 'greeting', whWeather: whTempGlobal, klWeather: klTempGlobal, days: daysToMeetGlobal })
                 });
                 const data = await res.json();
-                if (data.message && textEl) {
+                if (data.message) {
                     textEl.innerHTML = data.message;
                 } else {
                     throw new Error('API 返回异常');
                 }
             } catch (e) {
-                console.log('AI问候API请求失败，使用本地预设');
-                if (textEl) {
-                    textEl.innerHTML = `早安宝贝！武汉今天${whTempGlobal}，吉隆坡是${klTempGlobal}。<br>距离我们相见还有 <span style="color:var(--pink); font-weight:bold;">${daysToMeetGlobal}</span> 天。<br>今天也要开开心心的，记得想我哦！💖`;
-                }
+                textEl.innerHTML = `早安宝贝！武汉今天${whTempGlobal}，吉隆坡是${klTempGlobal}。<br>距离我们相见还有 <span style="color:var(--pink); font-weight:bold;">${daysToMeetGlobal}</span> 天。<br>今天也要开开心心的，记得想我哦！💖`;
             }
         }
 
-        // ============================
-        // 地图动画
-        // ============================
+        // 🌟 修复：保存定时器引用，避免内存泄漏
         function startMapAnimation() {
+            // 清除之前的定时器
+            if (mapAnimationInterval) clearInterval(mapAnimationInterval);
+            
             setTimeout(() => {
                 ['dkl', 'lkl', 'dwh', 'lwh'].forEach(id => {
                     const el = document.getElementById(id);
-                    if (el) { el.style.transition = 'opacity 0.6s';
-                        el.style.opacity = '1'; }
+                    if (el) { el.style.transition = 'opacity 0.6s'; el.style.opacity = '1'; }
                 });
-
-                setInterval(() => {
+                mapAnimationInterval = setInterval(() => {
                     ['rkl', 'rwh'].forEach(id => {
                         const el = document.getElementById(id);
                         if (!el) return;
@@ -1553,36 +1490,26 @@
                     setTimeout(() => {
                         const djp = document.getElementById('djp');
                         const ljp = document.getElementById('ljp');
-                        if (djp) { djp.style.transition = 'opacity 0.6s';
-                            djp.style.opacity = '1'; }
-                        if (ljp) { ljp.style.transition = 'opacity 0.6s';
-                            ljp.style.opacity = '1'; }
-
+                        if (djp) { djp.style.transition = 'opacity 0.6s'; djp.style.opacity = '1'; }
+                        if (ljp) { ljp.style.transition = 'opacity 0.6s'; ljp.style.opacity = '1'; }
                         const fw = document.getElementById('fw');
                         if (fw) {
                             fw.style.transition = 'opacity 0.2s';
                             fw.style.opacity = '1';
-                            setTimeout(() => { fw.style.transition = 'opacity 0.8s';
-                                fw.style.opacity = '0'; }, 600);
+                            setTimeout(() => { fw.style.transition = 'opacity 0.8s'; fw.style.opacity = '0'; }, 600);
                         }
                     }, 1800);
                 }, 600);
             }, 500);
         }
 
-        // ============================
-        // 页面过渡
-        // ============================
         function startTransition(targetIndex, msg) {
             const overlay = document.getElementById('transition');
             const numEl = document.getElementById('trans-num');
             const msgEl = document.getElementById('trans-msg');
-
             overlay.classList.add('show');
             msgEl.innerText = msg;
             msgEl.style.opacity = '0';
-            numEl.style.transform = 'scale(1)';
-
             let countdown = 3;
             numEl.innerText = countdown;
 
@@ -1606,16 +1533,12 @@
             }, 1000);
         }
 
-        // ============================
-        // 弹窗系统
-        // ============================
         function showPopup(icon, title, msg) {
             document.getElementById('popup-icon').innerText = icon;
             document.getElementById('popup-title').innerText = title;
             document.getElementById('popup-msg').innerHTML = msg.replace(/\n/g, '<br>');
             document.getElementById('popup').classList.add('show');
         }
-
         function closePopup() {
             document.getElementById('popup').classList.remove('show');
             if (window.popupCallback) {
@@ -1625,89 +1548,37 @@
             }
         }
 
-        // ============================
-        // 逃跑按钮逻辑
-        // ============================
         const noBtn = document.getElementById('btn-no');
-        const noTexts = ["点不到吧～", "再点变小猪🐷！", "放弃吧笨蛋！", "不许点这个！", "抓不到我略略略~", "你还点？", "手速太慢啦！",
-            "快去点【超级想】！", "哼，休想拒绝我"
-        ];
+        const noTexts = ["点不到吧～", "再点变小猪🐷！", "放弃吧笨蛋！", "不许点这个！", "抓不到我略略略~", "你还点？", "手速太慢啦！", "快去点【超级想】！", "哼，休想拒绝我"];
         let noClickCount = 0;
-
         function runAway(e) {
             if (e.type === 'touchstart') e.preventDefault();
             if (noClickCount >= 10) return;
-
             noClickCount++;
-
             if (noClickCount >= 10) {
-                showPopup('😭', '本系统认输！', '好嘛好嘛，算你厉害！\n但本系统拒绝执行你的操作，\n已自动强行帮你勾选【超级想】！🎉');
-                window.popupCallback = () => {
-                    startTransition(2, '心口不一的家伙，强行篡改答案加载信件中...');
-                };
+                showPopup('😭', '本系统认输！', '已自动帮你勾选【超级想】！');
+                window.popupCallback = () => startTransition(2, '心意已接收...');
                 return;
             }
-
             noBtn.innerText = noTexts[noClickCount % noTexts.length];
-
             const maxX = Math.max(10, window.innerWidth - noBtn.offsetWidth - 20);
             const maxY = Math.max(80, window.innerHeight - noBtn.offsetHeight - 20);
-            const randomX = Math.max(10, Math.random() * maxX);
-            const randomY = Math.max(80, Math.random() * maxY);
-
             noBtn.style.position = 'fixed';
-            noBtn.style.left = randomX + 'px';
-            noBtn.style.top = randomY + 'px';
+            noBtn.style.left = Math.random() * maxX + 'px';
+            noBtn.style.top = Math.random() * maxY + 'px';
             noBtn.style.zIndex = '9999';
         }
-
         if (noBtn) {
             noBtn.addEventListener('mouseover', runAway);
             noBtn.addEventListener('touchstart', runAway, { passive: false });
         }
 
-        // ============================
-        // 答题系统
-        // ============================
-        const qData = [{
-            text: '我们在日本第一次奔现，我见到你第一眼，内心最真实的OS是？',
-            opts: [
-                { k: 'A', t: '天哪，她长得比照片/视频里还好看！' },
-                { k: 'B', t: '完了，我今天发型是不是有点乱？' },
-                { k: 'C', t: '太好了，终于抱到真人了，好不真实。' },
-                { k: 'D', t: '以上全部，当时我紧张得心都快跳出来了！' }
-            ],
-            ans: 'D',
-            allowAll: true,
-            feedback: { icon: '💗', title: '恭喜答对！', msg: '其实我当时手心全是汗，满脑子都是你。' }
-        }, {
-            text: '这次日本旅行里，你觉得我最喜欢你哪一个瞬间？',
-            opts: [
-                { k: 'A', t: '吃到好吃的东西，眼睛放光的时候。' },
-                { k: 'B', t: '走累了，迷迷糊糊靠在我肩膀上的时候。' },
-                { k: 'C', t: '跟我走在街上，突然转头对我笑的时候。' },
-                { k: 'D', t: '每一个瞬间。只要视线里有你，我都喜欢。' }
-            ],
-            ans: 'D',
-            allowAll: true,
-            feedback: { icon: '📸', title: '解锁记忆', msg: '其实不管你选哪个，答案都是对的。因为只要视线里有你，你所有的瞬间我都喜欢。' }
-        }, {
-            text: '马来西亚和中国虽然隔着海洋，但你知道从我的心到你的心，距离是多少吗？',
-            isInput: true,
-            feedback: { icon: '💘', title: '笨蛋，答案是 0 公里。', msg: '因为你一直都住在我的心里，一秒钟都没有离开过。' }
-        }, {
-            text: '每次我们打视频电话，最常出现的、属于我们两人的秘密梗是什么？',
-            opts: [
-                { k: 'A', t: '"吃了吗？饿不饿，多吃点"' },
-                { k: 'B', t: '"你先挂" "不，你先挂"' },
-                { k: 'C', t: '"睡着了吗？"' }
-            ],
-            ans: 'A',
-            allowAll: false,
-            feedback: { icon: '📞', title: '默契满分',
-                msg: '“吃了吗？饿不饿”——在这个什么都讲究效率的时代，我只关心你有没有好好照顾自己。' },
-            wrong: { icon: '😤', title: '哼，这也能选错？', msg: '看来有人皮痒了，再给你一次重新组织语言的机会！' }
-        }];
+        const qData = [
+            { text: '我们在日本第一次奔现，我见到你第一眼，内心最真实的OS是？', opts: [{ k: 'A', t: '天哪，她长得比照片/视频里还好看！' }, { k: 'B', t: '完了，我今天发型是不是有点乱？' }, { k: 'C', t: '太好了，终于抱到真人了，好不真实。' }, { k: 'D', t: '以上全部，当时我紧张得心都快跳出来了！' }], ans: 'D', allowAll: true, feedback: { icon: '💗', title: '恭喜答对！', msg: '其实我当时手心全是汗，满脑子都是你。' } },
+            { text: '这次日本旅行里，你觉得我最喜欢你哪一个瞬间？', opts: [{ k: 'A', t: '吃到好吃的东西，眼睛放光的时候。' }, { k: 'B', t: '走累了，迷迷糊糊靠在我肩膀上的时候。' }, { k: 'C', t: '跟我走在街上，突然转头对我笑的时候。' }, { k: 'D', t: '每一个瞬间。只要视线里有你，我都喜欢。' }], ans: 'D', allowAll: true, feedback: { icon: '📸', title: '解锁记忆', msg: '其实不管你选哪个，答案都是对的。' } },
+            { text: '马来西亚和中国虽然隔着海洋，但你知道从我的心到你的心，距离是多少吗？', isInput: true, feedback: { icon: '💘', title: '笨蛋，答案是 0 公里。', msg: '因为你一直都住在我的心里。' } },
+            { text: '每次我们打视频电话，最常出现的、属于我们两人的秘密梗是什么？', opts: [{ k: 'A', t: '"吃了吗？饿不饿，多吃点"' }, { k: 'B', t: '"你先挂" "不，你先挂"' }, { k: 'C', t: '"睡着了吗？"' }], ans: 'A', allowAll: false, feedback: { icon: '📞', title: '默契满分', msg: '我只关心你有没有好好照顾自己。' }, wrong: { icon: '😤', title: '哼，这也能选错？', msg: '再给你一次机会！' } }
+        ];
 
         let currQ = 0;
         let selOpt = null;
@@ -1715,20 +1586,15 @@
         function renderQuiz() {
             if (currQ >= qData.length) return;
             const q = qData[currQ];
-            let html =
-                `<div class="qcard"><div style="color:var(--pink); font-size:0.9rem; font-weight:600; margin-bottom:1rem;">QUESTION 0${currQ+1}</div><div class="qtext">${q.text}</div>`;
-
+            let html = `<div class="qcard"><div style="color:var(--pink); font-size:0.9rem; font-weight:600; margin-bottom:1rem;">QUESTION 0${currQ+1}</div><div class="qtext">${q.text}</div>`;
             if (q.isInput) {
-                html +=
-                    `<div class="opt-free"><input type="text" id="q-input" placeholder="输入任意内容..." onkeydown="if(event.key==='Enter')submitQuiz()"/></div>`;
+                html += `<div class="opt-free"><input type="text" id="q-input" placeholder="输入任意内容..." onkeydown="if(event.key==='Enter')submitQuiz()"/></div>`;
             } else {
                 q.opts.forEach(o => {
-                    html +=
-                        `<div class="opt" onclick="selectOpt(this, '${o.k}')"><strong>${o.k}</strong> <span>${o.t}</span></div>`;
+                    html += `<div class="opt" onclick="selectOpt(this, '${o.k}')"><strong>${o.k}</strong> <span>${o.t}</span></div>`;
                 });
             }
-            html +=
-                `<div style="text-align:right; margin-top:1.5rem;"><button class="btn" style="padding:0.6rem 2rem; margin-top:0;" onclick="submitQuiz()">校验答案</button></div></div>`;
+            html += `<div style="text-align:right; margin-top:1.5rem;"><button class="btn" style="padding:0.6rem 2rem; margin-top:0;" onclick="submitQuiz()">校验答案</button></div></div>`;
             document.getElementById('qwrap').innerHTML = html;
             selOpt = null;
         }
@@ -1746,7 +1612,6 @@
             const maxMove = 40;
             document.getElementById('fig-kl').style.left = (10 + (pct / 100) * maxMove) + '%';
             document.getElementById('fig-wh').style.right = (10 + (pct / 100) * maxMove) + '%';
-
             if (step >= total) {
                 setTimeout(() => {
                     document.getElementById('fig-kl').style.opacity = '0';
@@ -1766,32 +1631,25 @@
                 const inputEl = document.getElementById('q-input');
                 if (!inputEl) return;
                 const val = inputEl.value.trim();
-                if (!val) { showPopup('⚠️', '警告', '输入框不能为空哦');
-                    return; }
-
+                if (!val) { showPopup('⚠️', '警告', '输入框不能为空哦'); return; }
                 if (val.includes('0') || val.includes('零') || val.includes('没') || val.includes('心')) {
                     isCorrect = true;
                 } else {
                     isCorrect = false;
-                    q.wrong = { icon: '📏', title: '距离测算失败', msg: '笨蛋，你再想想！\n提示：看看你的心里面。' };
+                    q.wrong = { icon: '📏', title: '距离测算失败', msg: '笨蛋，你再想想！' };
                 }
             } else {
-                if (!selOpt) { showPopup('⚠️', '警告', '请先选择一个选项');
-                    return; }
-                if (!q.allowAll && selOpt !== q.ans) {
-                    isCorrect = false;
-                }
+                if (!selOpt) { showPopup('⚠️', '警告', '请先选择一个选项'); return; }
+                if (!q.allowAll && selOpt !== q.ans) isCorrect = false;
             }
 
             if (!isCorrect) {
-                if (soundWrong) { soundWrong.currentTime = 0;
-                    soundWrong.play().catch(e => console.log(e)); }
+                if (soundWrong) { soundWrong.currentTime = 0; soundWrong.play().catch(e => {}); }
                 const w = q.wrong || { icon: '❌', title: '错误', msg: '再仔细想想？' };
                 showPopup(w.icon, w.title, w.msg);
                 return;
             } else {
-                if (soundCorrect) { soundCorrect.currentTime = 0;
-                    soundCorrect.play().catch(e => console.log(e)); }
+                if (soundCorrect) { soundCorrect.currentTime = 0; soundCorrect.play().catch(e => {}); }
                 window.popupCallback = () => {
                     currQ++;
                     selOpt = null;
@@ -1799,51 +1657,34 @@
                     if (currQ < qData.length) {
                         renderQuiz();
                     } else {
-                        document.getElementById('qwrap').innerHTML =
-                            `<div style="text-align:center; margin-top:3rem;"><h3 style="color:var(--pink); font-family:var(--serif); font-size:1.5rem; margin-bottom:1rem;">身份验证：100% 契合</h3><p style="color:var(--muted); margin-bottom:2rem;">你就是那个一直住在我心里的人</p><button class="btn" style="margin-top:0;" onclick="startTransition(4, '礼物清单正在生成...')">拆开终极礼物</button></div>`;
+                        document.getElementById('qwrap').innerHTML = `<div style="text-align:center; margin-top:3rem;"><h3 style="color:var(--pink); font-family:var(--serif); font-size:1.5rem; margin-bottom:1rem;">身份验证：100% 契合</h3><p style="color:var(--muted); margin-bottom:2rem;">你就是那个一直住在我心里的人</p><button class="btn" style="margin-top:0;" onclick="startTransition(4, '礼物清单正在生成...')">拆开终极礼物</button></div>`;
                     }
                 };
                 showPopup(q.feedback.icon, q.feedback.title, q.feedback.msg);
             }
         }
-
-        // 初始化答题
         renderQuiz();
 
-        // ============================
-        // 礼物盲盒系统
-        // ============================
         const giftData = [
-            { i: '🏰', t: '上海迪士尼', d: '专属领航员带你看城堡烟花' },
-            { i: '✈️', t: '飞越山海', d: '为你安排好行程' },
-            { i: '🍜', t: '吉隆坡夜市', d: '带你吃遍美食' },
-            { i: '📸', t: '专属快门', d: '再见时等你一起再合照' },
-            { i: '🧸', t: '大大的拥抱', d: '见面第一秒补齐所有拥抱' },
-            { i: '💌', t: '未来的底气', d: '无论多远，我对我们的未来很坚定' }
+            { i: '🏰', t: '上海迪士尼', d: '专属领航员带你看城堡烟花' }, { i: '✈️', t: '飞越山海', d: '为你安排好行程' }, { i: '🍜', t: '吉隆坡夜市', d: '带你吃遍美食' }, { i: '📸', t: '专属快门', d: '再见时等你一起再合照' }, { i: '🧸', t: '大大的拥抱', d: '见面第一秒补齐所有拥抱' }, { i: '💌', t: '未来的底气', d: '无论多远，我对我们的未来很坚定' }
         ];
-
         const gGrid = document.getElementById('gifts-grid');
         if (gGrid) {
             giftData.forEach(g => {
                 let b = document.createElement('div');
                 b.className = 'gift-box';
-                b.innerHTML =
-                    `<div class="gift-lid">${g.i}</div><div class="gift-content"><h4>[ ${g.t} ]</h4><p>${g.d}</p></div>`;
+                b.innerHTML = `<div class="gift-lid">${g.i}</div><div class="gift-content"><h4>[ ${g.t} ]</h4><p>${g.d}</p></div>`;
                 b.onclick = () => {
                     if (b.classList.contains('opened')) return;
                     b.classList.add('opened');
                     if (document.querySelectorAll('.gift-box.opened').length === giftData.length) {
-                        const btnFinal = document.getElementById('btn-final');
-                        if (btnFinal) btnFinal.style.display = 'inline-block';
+                        document.getElementById('btn-final').style.display = 'inline-block';
                     }
                 };
                 gGrid.appendChild(b);
             });
         }
 
-        // ============================
-        // 照片墙系统
-        // ============================
         const photoData = [
             { img: 'e65223439ca0832c1a415b7cdec5f393.jpg', txt: 'USJ怪物猎人餐厅的干杯，是我们跨越屏幕后最真实的烟火气。' },
             { img: 'a7dfa33f548151c3ce524c02e76c9d0a.jpg', txt: '讲台前装作老师的你，可爱得让我甘愿当一辈子你的专属笨学生。' },
@@ -1854,21 +1695,14 @@
             { img: '5ed2f64118c781c33280e765c3b1bc0a.jpg', txt: '在奈良被小鹿"围攻"到手足无措的你，慌乱中透着让我心动的可爱。' },
             { img: 'c1e183c893e7e1bc0392fef66ca3b314.jpg', txt: '路过便利店特意买面包喂鸽子。你骨子里的这份温柔，是我迷恋你的原罪。' },
             { img: '9f499e2915a1026c5f9710b364ac83d1.jpg', txt: '我们的第一张合照。画质或许不完美，但在我人生的时间轴上，它是最高清的起点。' },
-            { img: '84f87fc7ef1962627e38787d320666b0.jpg',
-                txt: '我手机里存下关于你的第一张特写。谁能想到，镜头里的这个女孩，会成为我未来的全部重心？' }
+            { img: '84f87fc7ef1962627e38787d320666b0.jpg', txt: '我手机里存下关于你的第一张特写。谁能想到，镜头里的这个女孩，会成为我未来的全部重心？' }
         ];
-
         const photoGrid = document.getElementById('photo-grid');
         if (photoGrid) {
             photoData.forEach(p => {
                 let card = document.createElement('div');
                 card.className = 'photo-card';
-                card.innerHTML = `
-                    <div class="photo-ph">
-                        <img src="${p.img}" alt="memory" loading="lazy">
-                    </div>
-                    <div class="photo-txt">${p.txt}</div>
-                `;
+                card.innerHTML = `<div class="photo-ph"><img src="${p.img}" alt="memory" loading="lazy"></div><div class="photo-txt">${p.txt}</div>`;
                 card.onclick = () => {
                     document.getElementById('viewer-img').src = p.img;
                     document.getElementById('viewer-txt').innerText = p.txt;
@@ -1878,19 +1712,24 @@
                 photoGrid.appendChild(card);
             });
         }
-
         function closeViewer() {
             document.getElementById('photo-viewer').style.opacity = '0';
             document.getElementById('photo-viewer').style.pointerEvents = 'none';
         }
 
-        // ============================
-        // 🌟 AI 聊天陪伴舱
-        // ============================
         function openChat() {
             document.querySelectorAll('section').forEach(s => s.classList.remove('active-page'));
             document.getElementById('page-chat').classList.add('active-page');
-            // 滚动聊天记录到底部
+            const mainBgm = document.getElementById('bgm');
+            const gameBgm = document.getElementById('game-bgm');
+            const chatBgm = document.getElementById('chat-bgm');
+            const btn = document.getElementById('music-btn');
+            mainBgm.pause();
+            gameBgm.pause();
+            if (!btn.classList.contains('paused')) {
+                chatBgm.currentTime = 0;
+                chatBgm.play().catch(e => console.log('树洞BGM播放失败:', e));
+            }
             setTimeout(() => {
                 const history = document.getElementById('chat-history');
                 if (history) history.scrollTop = history.scrollHeight;
@@ -1900,6 +1739,13 @@
         function closeChat() {
             document.querySelectorAll('section').forEach(s => s.classList.remove('active-page'));
             document.getElementById('page-0').classList.add('active-page');
+            const mainBgm = document.getElementById('bgm');
+            const chatBgm = document.getElementById('chat-bgm');
+            const btn = document.getElementById('music-btn');
+            chatBgm.pause();
+            if (!btn.classList.contains('paused')) {
+                mainBgm.play().catch(e => console.log('主BGM恢复失败:', e));
+            }
         }
 
         function appendMessage(role, text) {
@@ -1920,39 +1766,17 @@
             if (!input) return;
             const text = input.value.trim();
             if (!text) return;
-
-            // 显示用户消息
             appendMessage('user', text);
             input.value = '';
             input.focus();
-
-            // 显示思考状态
-            const thinkingId = appendMessage('bot',
-            '<span class="typing-indicator">领航员正在努力连线回复中...💭</span>');
-
-            // 更新上下文
+            const thinkingId = appendMessage('bot', '<span class="typing-indicator">领航员正在努力连线回复中...💭</span>');
             chatContext.push({ role: 'user', content: text });
-
-            // 限制上下文长度（保留最近20轮对话）
-            if (chatContext.length > 40) {
-                chatContext = chatContext.slice(-40);
-            }
-
+            if (chatContext.length > 40) chatContext = chatContext.slice(-40);
             try {
-                const res = await fetch('/api/ai', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        action: 'chat',
-                        history: chatContext
-                    })
-                });
+                const res = await fetch('/api/ai', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'chat', history: chatContext }) });
                 const data = await res.json();
-
-                // 移除思考状态
                 const thinkingEl = document.getElementById(thinkingId);
                 if (thinkingEl) thinkingEl.remove();
-
                 if (data.message) {
                     const botReply = data.message.replace(/\n/g, '<br>');
                     appendMessage('bot', botReply);
@@ -1961,30 +1785,20 @@
                     throw new Error('No response');
                 }
             } catch (e) {
-                console.log('AI聊天API请求失败');
                 const thinkingEl = document.getElementById(thinkingId);
                 if (thinkingEl) {
-                    thinkingEl.innerHTML =
-                        '（信号被星际尘埃干扰啦，暂时没接通，宝贝等会儿再试一下🥺<br>不过我一直都在这里陪着你哦～）';
+                    thinkingEl.innerHTML = '（信号被星际尘埃干扰啦，暂时没接通，宝贝等会儿再试一下🥺）';
                     thinkingEl.className = 'msg bot';
                 }
-                // 移除失败的用户消息上下文
-                if (chatContext.length > 0 && chatContext[chatContext.length - 1].role === 'user') {
-                    chatContext.pop();
-                }
+                if (chatContext.length > 0 && chatContext[chatContext.length - 1].role === 'user') chatContext.pop();
             }
         }
 
         function handleChatEnter(e) {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                sendChatMessage();
-            }
+            if (e.key === 'Enter') { e.preventDefault();
+                sendChatMessage(); }
         }
 
-        // ============================
-        // 小游戏系统
-        // ============================
         if (canvas) {
             canvas.addEventListener('mousemove', (e) => { if (gameActive) playerX = e.clientX; });
             canvas.addEventListener('touchmove', (e) => {
@@ -1996,32 +1810,22 @@
         function openGame() {
             document.querySelectorAll('section').forEach(s => s.classList.remove('active-page'));
             document.getElementById('page-game').classList.add('active-page');
-
-            if (canvas) {
-                canvas.width = window.innerWidth;
-                canvas.height = window.innerHeight;
-            }
+            if (canvas) { canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight; }
             playerX = (canvas ? canvas.width : window.innerWidth) / 2;
             gameScore = 0;
             items = [];
             particles = [];
-
             document.getElementById('game-progress').style.width = '0%';
             document.getElementById('game-confession').style.opacity = '0';
             document.getElementById('game-confession').style.pointerEvents = 'none';
-
             gameActive = true;
-
-            // 音乐切换：停掉主音乐，播放游戏音乐
             const mainBgm = document.getElementById('bgm');
             const gameBgm = document.getElementById('game-bgm');
             const btn = document.getElementById('music-btn');
             mainBgm.pause();
-            if (!btn.classList.contains('paused')) {
-                gameBgm.currentTime = 0;
-                gameBgm.play().catch(e => console.log('游戏BGM播放失败:', e));
-            }
-
+            if (!btn.classList.contains('paused')) { gameBgm.currentTime = 0;
+                gameBgm.play().catch(e => {}); }
             gameLoop();
         }
 
@@ -2030,39 +1834,26 @@
             cancelAnimationFrame(animationId);
             document.querySelectorAll('section').forEach(s => s.classList.remove('active-page'));
             document.getElementById('page-0').classList.add('active-page');
-
-            // 音乐切换：停掉游戏音乐，恢复主音乐
             const mainBgm = document.getElementById('bgm');
             const gameBgm = document.getElementById('game-bgm');
             const btn = document.getElementById('music-btn');
             gameBgm.pause();
-            if (!btn.classList.contains('paused')) {
-                mainBgm.play().catch(e => console.log('主BGM恢复失败:', e));
-            }
+            if (!btn.classList.contains('paused')) { mainBgm.play().catch(e => {}); }
         }
 
         function gameLoop() {
             if (!gameActive || !ctx || !canvas) return;
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-
             if (gameScore < 100) {
-                // 生成掉落物品
                 if (Math.random() < 0.04) {
-                    items.push({
-                        x: Math.random() * (canvas.width - 60) + 30,
-                        y: -30,
-                        speed: Math.random() * 3 + 3,
-                        emoji: ['❤️', '💖', '🥰', '💌', '🌸'][Math.floor(Math.random() * 5)]
-                    });
+                    items.push({ x: Math.random() * (canvas.width - 60) + 30, y: -30, speed: Math.random() * 3 + 3, emoji: ['❤️', '💖', '🥰', '💌', '🌸'][Math.floor(Math.random() * 5)] });
                 }
-
                 ctx.font = "35px Arial";
                 ctx.textAlign = "center";
                 for (let i = items.length - 1; i >= 0; i--) {
                     let item = items[i];
                     item.y += item.speed;
                     ctx.fillText(item.emoji, item.x, item.y);
-
                     let py = canvas.height - 100;
                     if (item.y > py - 20 && item.y < py + 40 && Math.abs(item.x - playerX) < 50) {
                         items.splice(i, 1);
@@ -2073,12 +1864,9 @@
                     }
                     if (item.y > canvas.height + 50) items.splice(i, 1);
                 }
-
-                // 绘制篮子
                 ctx.font = "55px Arial";
                 ctx.fillText("🧺", playerX, canvas.height - 70);
             } else {
-                // 胜利后的烟花粒子
                 for (let i = particles.length - 1; i >= 0; i--) {
                     let p = particles[i];
                     p.x += p.vx;
@@ -2095,7 +1883,6 @@
                 ctx.globalAlpha = 1;
                 if (particles.length < 150 && Math.random() < 0.1) createFirework();
             }
-
             animationId = requestAnimationFrame(gameLoop);
         }
 
@@ -2114,56 +1901,27 @@
             const colors = ['#ec4899', '#3b82f6', '#f59e0b', '#ffffff', '#be185d'];
             const color = colors[Math.floor(Math.random() * colors.length)];
             for (let i = 0; i < 60; i++) {
-                particles.push({
-                    x: x,
-                    y: y,
-                    vx: (Math.random() - 0.5) * 12,
-                    vy: (Math.random() - 0.5) * 12,
-                    size: Math.random() * 3 + 1.5,
-                    color: color,
-                    life: 1
-                });
+                particles.push({ x: x, y: y, vx: (Math.random() - 0.5) * 12, vy: (Math.random() - 0.5) * 12, size: Math.random() * 3 + 1.5, color: color, life: 1 });
             }
         }
 
-        // ============================
-        // 窗口大小调整（响应式画布）
-        // ============================
         window.addEventListener('resize', () => {
-            if (gameActive && canvas) {
-                const oldW = canvas.width;
+            if (gameActive && canvas) { const oldW = canvas.width;
                 canvas.width = window.innerWidth;
                 canvas.height = window.innerHeight;
-                playerX = (playerX / oldW) * canvas.width;
-            }
+                playerX = (playerX / oldW) * canvas.width; }
         });
 
-        // ============================
-        // 照片查看器点击空白关闭
-        // ============================
-        document.getElementById('photo-viewer').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeViewer();
-            }
-        });
+        document.getElementById('photo-viewer').addEventListener('click', function(e) { if (e.target === this) closeViewer(); });
 
-        // ============================
-        // 键盘快捷键
-        // ============================
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') {
-                if (document.getElementById('photo-viewer').style.opacity === '1') {
-                    closeViewer();
-                } else if (document.getElementById('popup').classList.contains('show')) {
-                    closePopup();
-                }
+                if (document.getElementById('photo-viewer').style.opacity === '1') closeViewer();
+                else if (document.getElementById('popup').classList.contains('show')) closePopup();
             }
         });
 
         console.log('🚀 专属领航员系统已就绪');
-        console.log('💌 所有功能模块加载完成');
-        console.log('📡 AI聊天功能需要部署 /api/ai 后端服务才能使用');
-        console.log('💡 如果没有后端，系统将使用本地预设的fallback回复');
     </script>
 </body>
 </html>
