@@ -1410,8 +1410,7 @@
             updateTimers();
 
             try {
-                const resWh = await fetch('https://api.open-meteo.com/v1/forecast?latitude=30.58&longitude=114.27&current_weather=true');
-                const dataWh = await resWh.json();
+                const resWh = await fetch('https://api.open-meteo.com/v1/forecast?latitude=30.381&longitude=114.321&current_weather=true');                const dataWh = await resWh.json();
                 whTempGlobal = `${parseWeather(dataWh.current_weather.weathercode)} ${Math.round(dataWh.current_weather.temperature)}°C`;
                 document.getElementById('wh-temp').innerText = whTempGlobal;
             } catch (e) {
@@ -1419,8 +1418,7 @@
             }
 
             try {
-                const resKl = await fetch('https://api.open-meteo.com/v1/forecast?latitude=3.14&longitude=101.69&current_weather=true');
-                const dataKl = await resKl.json();
+                const resKl = await fetch('https://api.open-meteo.com/v1/forecast?latitude=3.1907019&longitude=101.6312902&current_weather=true');                const dataKl = await resKl.json();
                 klTempGlobal = `${parseWeather(dataKl.current_weather.weathercode)} ${Math.round(dataKl.current_weather.temperature)}°C`;
                 document.getElementById('kl-temp').innerText = klTempGlobal;
             } catch (e) {
