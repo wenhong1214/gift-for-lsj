@@ -217,6 +217,7 @@
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
             overflow: hidden;
             flex-shrink: 0;
+            background-color: #06060f; /* 增强加载时的兜底背景色 */
         }
         #map-svg {
             display: block;
@@ -1018,7 +1019,6 @@
                 font-size: 5rem;
             }
 
-            /* 🌟 首页按钮优化：一行排列、均分宽度 */
             .home-actions {
                 gap: 6px;
                 flex-wrap: nowrap;
@@ -1118,9 +1118,11 @@
     <section id="page-0">
         <div class="ip-greeting" id="ip-greeting">✨ 正在连接专属星际航线...</div>
         <div id="map-visualizer">
-            <svg id="map-svg" viewBox="0 0 680 560" xmlns="http://www.w3.org/2000/svg">
-                <defs><clipPath id="mc"><rect width="680" height="560"/></clipPath></defs>
-                <rect width="680" height="560" fill="#06060f"/>
+            <!-- 🌟 核心优化：将 viewBox 高度、clipPath 高度、rect 高度统统从 560 修改为 340，完美切除底部无用黑边 -->
+            <svg id="map-svg" viewBox="0 0 680 340" xmlns="http://www.w3.org/2000/svg">
+                <defs><clipPath id="mc"><rect width="680" height="340"/></clipPath></defs>
+                <rect width="680" height="340" fill="#06060f"/>
+                <!-- image 的高度保持不变，这样内部经纬坐标点渲染完全不会跑偏，配合裁剪框做到无缝衔接 -->
                 <image href="map.png" x="0" y="0" width="680" height="621" clip-path="url(#mc)" preserveAspectRatio="xMinYMin meet" opacity="0.8"/>
                 <path id="path-kl" d="M370,150 C400,130 430,130 463,145" stroke="var(--pink)" stroke-width="2.5" fill="none" stroke-dasharray="200" stroke-dashoffset="200"/>
                 <path id="path-wh" d="M327,273 C360,200 400,150 463,145" stroke="var(--blue)" stroke-width="2.5" fill="none" stroke-dasharray="300" stroke-dashoffset="300"/>
@@ -1282,7 +1284,7 @@
         let whTempGlobal = '25°C';
         let klTempGlobal = '30°C';
         let daysToMeetGlobal = 0;
-        let mapAnimationInterval = null; // 🌟 修复：保存定时器引用
+        let mapAnimationInterval = null; 
 
         const canvas = document.getElementById('game-canvas');
         const ctx = canvas ? canvas.getContext('2d') : null;
@@ -1453,9 +1455,7 @@
             }
         }
 
-        // 🌟 修复：保存定时器引用，避免内存泄漏
         function startMapAnimation() {
-            // 清除之前的定时器
             if (mapAnimationInterval) clearInterval(mapAnimationInterval);
             
             setTimeout(() => {
