@@ -1458,11 +1458,13 @@
             const dateStr = new Date().toLocaleDateString('zh-CN', { month: 'long', day: 'numeric', weekday: 'long' });
             document.getElementById('greeting-date').innerText = `✨ 今日特供电波 - ${dateStr} ✨`;
             const textEl = document.getElementById('greeting-text');
+            const now = new Date();
+            const hour = now.getHours();
             try {
                 const res = await fetch('/api/ai', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ action: 'greeting', whWeather: whTempGlobal, klWeather: klTempGlobal, days: daysToMeetGlobal })
+                    body: JSON.stringify({ action: 'greeting', whWeather: whTempGlobal, klWeather: klTempGlobal, days: daysToMeetGlobal, hour })
                 });
                 const data = await res.json();
                 if (data.message) {
@@ -1830,7 +1832,13 @@
             chatContext.push({ role: 'user', content: text });
             if (chatContext.length > 40) chatContext = chatContext.slice(-40);
             try {
-                const res = await fetch('/api/ai', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'chat', history: chatContext }) });
+                const now = new Date();
+                const hour = now.getHours();
+                const res = await fetch('/api/ai', { 
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'application/json' }, 
+                    body: JSON.stringify({ action: 'chat', history: chatContext, hour }) 
+                });
                 const data = await res.json();
                 const thinkingEl = document.getElementById(thinkingId);
                 if (thinkingEl) thinkingEl.remove();
