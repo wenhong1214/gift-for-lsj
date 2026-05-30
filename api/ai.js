@@ -7,7 +7,7 @@ export default async function handler(req, res) {
 
     // 从 Vercel 环境变量中读取你的 API Key
     // 请在 Vercel 面板 -> Settings -> Environment Variables 里添加 OPENAI_API_KEY
-    const apiKey = process.env.OPENROUTER_API_KEY; 
+    const apiKey = process.env.OPENROUTER_API_KEY3; 
     
     // 如果你使用的是支持 OpenAI 格式的其他大模型（如 智谱、Kimi、DeepSeek），可以在 Vercel 加上 OPENAI_BASE_URL
     const baseUrl = process.env.OPENAI_BASE_URL || 'https://openrouter.ai/api/v1/chat/completions';
