@@ -1651,16 +1651,30 @@
                 const inputEl = document.getElementById('q-input');
                 if (!inputEl) return;
                 const val = inputEl.value.trim();
-                if (!val) { showPopup('⚠️', '警告', '输入框不能为空哦'); return; }
-                if (val.includes('0') || val.includes('零') || val.includes('没') || val.includes('心')) {
-                    isCorrect = true;
-                } else {
-                    isCorrect = false;
-                    q.wrong = { icon: '📏', title: '距离测算失败', msg: '笨蛋，你再想想！' };
+                if (!val) {
+                    showPopup('⚠️', '警告', '输入框不能为空哦');
+                    return;
                 }
-            } else {
-                if (!selOpt) { showPopup('⚠️', '警告', '请先选择一个选项'); return; }
-                if (!q.allowAll && selOpt !== q.ans) isCorrect = false;
+
+                // 输入题永远算正确，不卡关
+                isCorrect = true;
+
+                // 精确匹配：只有 "0" 或 "零"（可带空格）才算心有灵犀
+                const normalized = val.replace(/\s/g, ''); // 去掉所有空格
+                if (normalized === '0' || normalized === '零' || normalized === '0公里' || normalized === '零公里') {
+                    q.feedback = {
+                        icon: '🐣',
+                        title: '咦？你怎么知道的？',
+                        msg: '这可是我们俩的秘密地图，起点是你，终点也是你，距离永远归零 ❤️'
+                    };
+                } else {
+                    // 其他任何输入都温柔告知正确答案
+                    q.feedback = {
+                        icon: '💘',
+                        title: '笨蛋，答案是 0 公里。',
+                        msg: '因为你一直都住在我的心里，所以距离从来不存在呀 💗'
+                    };
+                }
             }
 
             if (!isCorrect) {
