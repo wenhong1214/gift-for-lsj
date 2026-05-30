@@ -1634,9 +1634,14 @@
                 if (!val) { showPopup('⚠️', '警告', '输入框不能为空哦'); return; }
                 if (val.includes('0') || val.includes('零') || val.includes('没') || val.includes('心')) {
                     isCorrect = true;
-                } else {
-                    isCorrect = false;
-                    q.wrong = { icon: '📏', title: '距离测算失败', msg: '笨蛋，你再想想！' };
+                }
+                if (/0|零/.test(val)) {
+                    // 替换为表扬专属弹窗
+                    q.feedback = {
+                        icon: '🎉',
+                        title: '咦？你怎么知道的？！',
+                        msg: '这可是我们俩的秘密地图，起点是你，终点也是你，距离永远归零。❤️'
+                    };
                 }
             } else {
                 if (!selOpt) { showPopup('⚠️', '警告', '请先选择一个选项'); return; }
